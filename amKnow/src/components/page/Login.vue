@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <el-form :model="formData" :rules="formRules" ref="formData">
-      <span class="title">amKnow</span>
+      <span class="title">公交车入厂维修管理系统</span>
       <el-form-item prop="username">
         <el-input
           type="text"
@@ -63,39 +63,40 @@ export default {
       this.$refs.formData.validate(valid => {
         if (valid) {
           let that = this;
-          axios
-            .get(
-              "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/user"
-            )
-            .then(response => {
-              let userInfs = response.data;
-              let flag = false;
-              let userInf = {};
-              for (let index in userInfs) {
-                if (
-                  userInfs[index].username == that.formData.username &&
-                  userInfs[index].password == that.formData.password
-                ) {
-                  flag = true;
-                  userInf = userInfs[index];
-                }
-              }
-              if (!flag) {
-                this.$message({
-                  message: "用户名或密码错误",
-                  type: "error"
-                });
-              } else {
-                sessionStorage.setItem("userInf", JSON.stringify(userInf));
-                this.$router.push({ path: "/automobileInfMng" });
-              }
-            })
-            .catch(error => {
-              that.$message({
-                message: "网络错误,请稍后再试",
+
+          try {
+            // 登录标志位
+            let flag = false;
+            let userInf = {};
+
+            if(
+              that.formData.username == 'admin' &&
+              that.formData.password == '123456'
+            ) {
+              flag = true;
+              userInf = {
+                username: that.formData.username,
+                password: that.formData.password
+              };
+            }
+
+            if (!flag) {
+              this.$message({
+                message: "用户名或密码错误",
                 type: "error"
               });
+            } else {
+              // 缓存
+              sessionStorage.setItem("userInf", JSON.stringify(userInf));
+              // 去到这个路由
+              this.$router.push({ path: "/automobileInfMng" });
+            }
+          } catch(error) {
+            that.$message({
+              message: "网络错误,请稍后再试",
+              type: "error"
             });
+          };
         }
       });
     }

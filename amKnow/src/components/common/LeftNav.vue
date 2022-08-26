@@ -15,17 +15,18 @@
         <el-submenu :index="navMenu.entity.path" v-if="navMenu.childs" :key="navMenu.entity.id">
           <template slot="title">
             <i :class="navMenu.entity.icon"></i>
-            <span style="padding-left:4px">{{navMenu.entity.name}}</span>
+            <span style="padding-left:4px">{{ navMenu.entity.name }}</span>
           </template>
           <el-menu-item
             v-for="child in navMenu.childs"
             :index="child.entity.path"
             :key="child.entity.id"
-          >{{child.entity.name}}</el-menu-item>
+          >{{ child.entity.name }}
+          </el-menu-item>
         </el-submenu>
         <el-menu-item :index="navMenu.entity.path" v-else :key="navMenu.entity.id">
           <i :class="navMenu.entity.icon"></i>
-          <span style="padding-left:4px">{{navMenu.entity.name}}</span>
+          <span style="padding-left:4px">{{ navMenu.entity.name }}</span>
         </el-menu-item>
       </template>
     </el-menu>
@@ -59,7 +60,8 @@
               class="el-menu-item"
               :class="$route.path=='/'+child.entity.path?'is-active':'put-color'"
               @click="$router.push(child.entity.path)"
-            >{{child.entity.name}}</li>
+            >{{ child.entity.name }}
+            </li>
           </ul>
         </template>
         <template v-else>
@@ -78,6 +80,7 @@
 </template>
 <script>
 import store from "@/vuex/store";
+
 export default {
   name: "LeftNav",
   props: ["navMenus"],
@@ -109,12 +112,15 @@ nav {
   flex: 0 0 230px;
   width: 230px;
 }
+
 .el-menu {
   height: 100%;
 }
+
 .collapsed {
   width: 60px;
 }
+
 .submenu {
   position: absolute;
   top: 0px;
@@ -123,23 +129,29 @@ nav {
   height: auto;
   display: none;
 }
-.active i{
+
+.active i {
   color: #409eff;
 }
-.put-color{
+
+.put-color {
   color: #053343;
 }
+
 .menu-collapsed {
   flex: 0 0 60px;
   width: 100%;
 }
+
 .menu-expanded {
   flex: 0 0 230px;
   width: 100%;
 }
+
 .el-submenu__title:hover {
   background-color: #d1dbe5 !important;
 }
+
 .el-menu-item:hover {
   background-color: #d1dbe5 !important;
 }

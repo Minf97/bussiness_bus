@@ -29,7 +29,7 @@ export default {
           //一级
           entity: {
             id: "AM",
-            name: "汽车管理",
+            name: "车辆管理",
             icon: "icon iconfont icon-box",
             path: "automobileMng"
           },
@@ -38,7 +38,7 @@ export default {
             {
               entity: {
                 id: "AIM",
-                name: "汽车信息管理",
+                name: "车辆信息",
                 icon: "",
                 path: "automobileInfMng"
               }
@@ -46,7 +46,7 @@ export default {
             {
               entity: {
                 id: "ABM",
-                name: "汽车品牌管理",
+                name: "车辆状态",
                 icon: "",
                 path: "automobileBrandMng"
               }
@@ -57,10 +57,55 @@ export default {
           //一级
           entity: {
             id: "SM",
-            name: "库存管理",
+            name: "保修管理",
             icon: "icon iconfont icon-similarproduct",
             path: "stockManage"
           }
+        },
+        {
+          //一级
+          entity: {
+            id: "DB",
+            name: "计划管理",
+            icon: "icon iconfont icon-viewgallery",
+            path: "Dashboard"
+          },
+        },
+        {
+          //一级
+          entity: {
+            id: "DB",
+            name: "知识库",
+            icon: "icon iconfont icon-viewgallery",
+            path: "Dashboard"
+          },
+        },
+        {
+          //一级
+          entity: {
+            id: "DB",
+            name: "备件管理",
+            icon: "icon iconfont icon-viewgallery",
+            path: "Dashboard"
+          },
+        },
+        {
+          //一级
+          entity: {
+            id: "DB",
+            name: "派单管理",
+            icon: "icon iconfont icon-viewgallery",
+            path: "Dashboard"
+          },
+        },
+        {
+          //一级
+          entity: {
+            id: "DB",
+            name: "后台管理",
+            icon: "icon iconfont icon-viewgallery",
+            path: "Dashboard"
+          },
         },
         {
           //一级
@@ -70,7 +115,7 @@ export default {
             icon: "icon iconfont icon-viewgallery",
             path: "Dashboard"
           }
-        }
+        },
       ]
     };
   },
