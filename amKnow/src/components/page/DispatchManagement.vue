@@ -191,36 +191,32 @@ export default {
             trigger: "blur"
           }
         ],
-         damage: [
-          {
-            required: true,
-            pattern: /^[\s\S]*.*[^\s][\s\S]*$/,
-            message: "请输入零件名称",
-            trigger: "blur"
-          }
-        ]
       }
     };
   },
   mounted() {
     this.loading = true;
     let that = this;
-    axios
-      .get(
-        "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/brand"
-      )
-      .then(response => {
-        that.brandInfs = response.data;
-        that.filterBrand();
-        that.loading = false;
-      })
-      .catch(error => {
-        that.$message({
-          message: "网络错误,请稍后再试",
-          type: "error"
-        });
-        that.loading = false;
-      });
+    this.filterBrandInfs = JSON.parse(window.localStorage.getItem("dispatch"))
+    that.loading = false;
+    // this.loading = true;
+    // let that = this;
+    // axios
+    //   .get(
+    //     "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/brand"
+    //   )
+    //   .then(response => {
+    //     that.brandInfs = response.data;
+    //     that.filterBrand();
+    //     that.loading = false;
+    //   })
+    //   .catch(error => {
+    //     that.$message({
+    //       message: "网络错误,请稍后再试",
+    //       type: "error"
+    //     });
+    //     that.loading = false;
+    //   });
   },
   computed: {
     getShow() {
@@ -245,7 +241,9 @@ export default {
       
         return isFiltersName 
       });
+
       this.filterBrandInfs = filtersBrand;
+      console.log(filtersBrand)
     },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
@@ -261,6 +259,11 @@ export default {
         time: "",
         record:""
       };
+    },
+    //处理存入缓存的函数
+    process(data){
+      console.log(data)
+      window.localStorage.setItem("dispatch",JSON.stringify(data) )
     },
     //显示编辑界面
     handleEdit(index, row) {
@@ -283,6 +286,7 @@ export default {
             }
           }
           this.filterBrand();
+          // this.process(brandInfs)
           this.$message({
             message: "删除成功",
             type: "success"
@@ -299,11 +303,14 @@ export default {
             cancelButtonClass: "btn-custom-cancel"
           })
             .then((res) => {
-                console.log(res)
               this.formData.id = this.getGuid();
               let newData = Object.assign({}, this.formData);
+              console.log(newData)
               this.brandInfs.push(newData);
               this.filterBrand();
+              console.log(this.brandInfs)
+              this.process(this.filterBrandInfs)
+              
               this.$message({
                 message: "添加成功",
                 type: "success"

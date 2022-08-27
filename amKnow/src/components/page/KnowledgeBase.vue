@@ -228,22 +228,8 @@ export default {
   mounted() {
     this.loading = true;
     let that = this;
-    axios
-      .get(
-        "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/brand"
-      )
-      .then(response => {
-        that.brandInfs = response.data;
-        that.filterBrand();
-        that.loading = false;
-      })
-      .catch(error => {
-        that.$message({
-          message: "网络错误,请稍后再试",
-          type: "error"
-        });
-        that.loading = false;
-      });
+    this.filterBrandInfs = JSON.parse(window.localStorage.getItem("Knowledge_base"))
+    that.loading = false;
   },
   computed: {
     getShow() {
@@ -257,6 +243,10 @@ export default {
     searchBrand(){
       this.currentPage = 1;
       this.filterBrand();
+    },
+      process(data){
+      console.log(data)
+      window.localStorage.setItem("Knowledge_base",JSON.stringify(data) )
     },
     filterBrand() {
       let filtersName = this.filters.name.trim();
@@ -273,6 +263,7 @@ export default {
         return isFiltersName && isFiltersCountry;
       });
       this.filterBrandInfs = filtersBrand;
+      this.process(filterBrandInfs)
     },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
@@ -285,7 +276,6 @@ export default {
         name: "",
         company:"",
         country:"",
-        founder: "",
         time: ""
       };
     },

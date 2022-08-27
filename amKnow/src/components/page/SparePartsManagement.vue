@@ -234,22 +234,24 @@ export default {
   mounted() {
     this.loading = true;
     let that = this;
-    axios
-      .get(
-        "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/brand"
-      )
-      .then(response => {
-        that.brandInfs = response.data;
-        that.filterBrand();
-        that.loading = false;
-      })
-      .catch(error => {
-        that.$message({
-          message: "网络错误,请稍后再试",
-          type: "error"
-        });
-        that.loading = false;
-      });
+    this.filterBrandInfs = JSON.parse(window.localStorage.getItem("spm_data"))
+    that.loading = false;
+    // axios
+    //   .get(
+    //     "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/brand"
+    //   )
+    //   .then(response => {
+    //     that.brandInfs = response.data;
+    //     that.filterBrand();
+    //     that.loading = false;
+    //   })
+    //   .catch(error => {
+    //     that.$message({
+    //       message: "网络错误,请稍后再试",
+    //       type: "error"
+    //     });
+    //     that.loading = false;
+    //   });
   },
   computed: {
     getShow() {
