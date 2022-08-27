@@ -76,7 +76,7 @@ export default {
           entity: {
             id: "KB",
             name: "知识库",
-            icon: "el-icon-edit icon iconfont",
+            icon: "el-icon-edit icon",
             path: "Knowledge_base"
           },
         },
@@ -85,7 +85,7 @@ export default {
           entity: {
             id: "SPM",
             name: "备件管理",
-            icon: "el-icon-news icon iconfont",
+            icon: "el-icon-news icon",
             path: "Spare_parts_management"
           },
         },
@@ -94,7 +94,7 @@ export default {
           entity: {
             id: "DM",
             name: "派单管理",
-            icon: "el-icon-time icon iconfont",
+            icon: "el-icon-time icon",
             path: "Dispatch_management"
           },
         },

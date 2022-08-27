@@ -46,43 +46,18 @@ export default new Router({
           }
         },
         {
-          path: 'Plan_management',
-          name: 'PlanManagement',
-          component:  resolve => require(['@/components/page/PlanManagement'], resolve),
+          path: 'Dashboard',
+          name: 'Dashboard',
+          component:  resolve => require(['@/components/page/Dashboard'], resolve),
           meta: {
             keepAlive: true // 需要缓存
           }
-        },
-        {
-          path: 'Knowledge_base',
-          name: 'KnowledgeBase',
-          component:  resolve => require(['@/components/page/KnowledgeBase'], resolve),
-          meta: {
-            keepAlive: true // 需要缓存
-          }
-        },
-        {
-          path: 'Spare_parts_management',
-          name: 'SparePartsManagement',
-          component:  resolve => require(['@/components/page/SparePartsManagement'], resolve),
-          meta: {
-            keepAlive: true // 需要缓存
-          }
-        },
-        {
-          path: 'Dispatch_management',
-          name: 'DispatchManagement',
-          component:  resolve => require(['@/components/page/DispatchManagement'], resolve),
-          meta: {
-            keepAlive: true // 需要缓存
-          }
-        },
-
+        }
       ]
     },
-    {
-      path: '*',
-      redirect: '/notFound'
-    }
+    // {
+    //   path: '*',
+    //   redirect: '/notFound'
+    // }
   ]
 })

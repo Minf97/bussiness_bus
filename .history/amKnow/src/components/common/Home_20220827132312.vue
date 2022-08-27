@@ -65,37 +65,37 @@ export default {
         {
           //一级
           entity: {
-            id: "PM",
+            id: "DB",
             name: "计划管理",
             icon: "icon iconfont icon-viewgallery",
-            path: "Plan_management"
+            path: "Dashboard"
           },
         },
         {
           //一级
           entity: {
-            id: "KB",
+            id: "DB",
             name: "知识库",
-            icon: "el-icon-edit icon iconfont",
-            path: "Knowledge_base"
+            icon: "icon iconfont icon-viewgallery",
+            path: "Dashboard"
           },
         },
         {
           //一级
           entity: {
-            id: "SPM",
+            id: "DB",
             name: "备件管理",
-            icon: "el-icon-news icon iconfont",
-            path: "Spare_parts_management"
+            icon: "icon iconfont icon-viewgallery",
+            path: "Dashboard"
           },
         },
         {
           //一级
           entity: {
-            id: "DM",
+            id: "DB",
             name: "派单管理",
-            icon: "el-icon-time icon iconfont",
-            path: "Dispatch_management"
+            icon: "icon iconfont icon-viewgallery",
+            path: "Dashboard"
           },
         },
         {
@@ -107,15 +107,15 @@ export default {
             path: "Dashboard"
           },
         },
-        // {
-        //   //一级
-        //   entity: {
-        //     id: "DB",
-        //     name: "Dashboard",
-        //     icon: "icon iconfont icon-viewgallery",
-        //     path: "Dashboard"
-        //   }
-        // },
+        {
+          //一级
+          entity: {
+            id: "DB",
+            name: "Dashboard",
+            icon: "icon iconfont icon-viewgallery",
+            path: "Dashboard"
+          }
+        },
       ]
     };
   },
