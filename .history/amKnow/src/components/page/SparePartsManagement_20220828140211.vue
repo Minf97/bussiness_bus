@@ -262,13 +262,6 @@ export default {
     }
   },
   methods: {
-     getStroage(){
-        return JSON.parse(window.localStorage.getItem("spm_data"))
-    },
-     process(data){
-      console.log(data)
-      window.localStorage.setItem("spm_data",JSON.stringify(data) )
-    },
     searchBrand(){
       this.currentPage = 1;
       this.filterBrand();
@@ -276,7 +269,6 @@ export default {
     filterBrand() {
       let filtersName = this.filters.name.trim();
       let filtersCountry = this.filters.country;
-      this.brandInfs = this.getStroage()
       let filtersBrand = this.brandInfs.filter(item => {
         var isFiltersName = true;
         var isFiltersCountry = true;

@@ -9,21 +9,7 @@
             :class="getShow == 1?'normal-input':(getShow == 2?'middle-input':'small-input')"
           ></el-input>
         </el-form-item>
-        <el-form-item>
-          <el-select
-            v-model="filters.country"
-            placeholder="产地"
-            :class="getShow == 1?'normal-select':(getShow == 2?'middle-select':'small-select')"
-          >
-            <el-option value>请选择</el-option>
-            <el-option
-              v-for="item in countries"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
+ 
         <el-form-item>
           <el-button
             type="primary"
@@ -65,25 +51,22 @@
       <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
       <el-table-column prop="name" label="零件名称" width="140" align="center" :formatter="formatName"></el-table-column>
       <el-table-column
-        prop="country"
-        label="产地"
+        prop="damage"
+        label="消耗情况"
         width="140"
         align="center"
-        :formatter="formatCountry"
       ></el-table-column>
       <el-table-column
-        prop="company"
-        label="规格"
+        prop="record"
+        label="情况记录"
         width="200"
         align="center"
-        :formatter="formatCompany"
       ></el-table-column>
       <el-table-column
-        prop="founder"
-        label="供应商"
+        prop="status"
+        label="派单状态"
         width="200"
         align="center"
-        :formatter="formatFounder"
       ></el-table-column>
       <el-table-column prop="time" label="时间" width="200" align="center" :formatter="formatTime"></el-table-column>
       <el-table-column label="操作" min-width="200" align="center" fixed="right">
@@ -139,22 +122,32 @@
       width="32%"
     >
       <el-form :model="formData" label-width="80px" :rules="formRules" ref="formData">
-        <el-form-item label="品牌名称" prop="name" class="row-padding-bottom">
+        <el-form-item label="零件名称" prop="name" class="row-padding-bottom">
           <el-input v-model="formData.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="产地" class="row-padding-bottom">
-          <el-select v-model="formData.country" style="width:100%">
+        <el-form-item label="消耗情况" class="row-padding-bottom">
+          <el-input v-model="formData.damage" autocomplete="off"></el-input>
+
+          <!-- <el-select v-model="formData.country" style="width:100%">
             <el-option
               v-for="item in countries"
               :key="item.value"
               :label="item.label"
               :value="item.value"
             ></el-option>
-          </el-select>
+          </el-select> -->
         </el-form-item>
-        <el-form-item label="供应商" class="row-padding-bottom">
-          <el-input v-model="formData.founder"></el-input>
+        <el-form-item label="情况记录" class="row-padding-bottom">
+          <el-input v-model="formData.record"></el-input>
         </el-form-item>
+        <el-form-item label="派单状态" class="row-padding-bottom">
+        <el-select v-model="formData.status" placeholder="请选择派送状态">
+            <el-option label="未发货" value="未发货"></el-option>
+            <el-option label="已派送" value="已派送"></el-option>
+            <el-option label="派送中" value="派送中"></el-option>
+        </el-select>
+        </el-form-item>
+     
         <el-form-item label="时间">
           <el-date-picker v-model="formData.time" format="yyyy年M月" value-format="yyyy年M月" :default-value="new Date(1935,0)" type="month"></el-date-picker>
         </el-form-item>
@@ -171,7 +164,7 @@
 import store from "@/vuex/store";
 import axios from "axios";
 export default {
-    name:"SparePartsManagement",
+   name:"DispatchManagement",
   store,
   data() {
     return {
@@ -182,38 +175,8 @@ export default {
       // sels: [],
       filters: {
         name: "",
-        country: ""
       },
-      countries: [
-        {
-          label: "中国",
-          value: "China"
-        },
-        {
-          label: "德国",
-          value: "Germany"
-        },
-        {
-          label: "美国",
-          value: "America"
-        },
-        {
-          label: "法国",
-          value: "France"
-        },
-        {
-          label: "意大利",
-          value: "Italy"
-        },
-        {
-          label: "日本",
-          value: "Japan"
-        },
-        {
-          label: "韩国",
-          value: "Korea"
-        }
-      ],
+ 
       filterBrandInfs: [],
       formVisible: false, //新增编辑界面是否显示
       formData: {}, //新增编辑界面数据
@@ -224,18 +187,20 @@ export default {
           {
             required: true,
             pattern: /^[\s\S]*.*[^\s][\s\S]*$/,
-            message: "请输入品牌名称",
+            message: "请输入零件名称",
             trigger: "blur"
           }
-        ]
+        ],
       }
     };
   },
   mounted() {
     this.loading = true;
     let that = this;
-    this.filterBrandInfs = JSON.parse(window.localStorage.getItem("spm_data"))
+    this.filterBrandInfs = JSON.parse(window.localStorage.getItem("dispatch"))
     that.loading = false;
+    // this.loading = true;
+    // let that = this;
     // axios
     //   .get(
     //     "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/brand"
@@ -254,6 +219,7 @@ export default {
     //   });
   },
   computed: {
+   
     getShow() {
       return this.$store.state.isShow;
     },
@@ -263,11 +229,11 @@ export default {
   },
   methods: {
      getStroage(){
-        return JSON.parse(window.localStorage.getItem("spm_data"))
+        return JSON.parse(window.localStorage.getItem("dispatch"))
     },
      process(data){
       console.log(data)
-      window.localStorage.setItem("spm_data",JSON.stringify(data) )
+      window.localStorage.setItem("dispatch",JSON.stringify(data) )
     },
     searchBrand(){
       this.currentPage = 1;
@@ -289,6 +255,7 @@ export default {
         return isFiltersName && isFiltersCountry;
       });
       this.filterBrandInfs = filtersBrand;
+
     },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
@@ -299,11 +266,13 @@ export default {
       this.addOrEdit = 0;
       this.formData = {
         name: "",
-        company: "",
-        founder: "",
-        time: ""
+        damage: "",
+        status: "",
+        time: "",
+        record:""
       };
     },
+
     //显示编辑界面
     handleEdit(index, row) {
       this.formVisible = true;
@@ -311,21 +280,22 @@ export default {
       this.formData = Object.assign({}, row);
       this.id = row.id;
     },
-     handleDelete(index, row) {
+    handleDelete(index, row) {
       this.$confirm("确认删除该记录吗?", "提示", {
         cancelButtonClass: "btn-custom-cancel",
         type: "warning"
       })
         .then(() => {
-           let brandInfs = this.getStroage();
+      
+       let brandInfs = this.getStroage();
           for (let index in brandInfs) {
             if (brandInfs[index].id == row.id) {
               brandInfs.splice(index, 1);
               break;
             }
           }
-          this.process(brandInfs)
           this.filterBrand();
+            this.process(brandInfs)
           this.$message({
             message: "删除成功",
             type: "success"
@@ -335,22 +305,21 @@ export default {
           // this.$message.error("删除失败");
         });
     },
-     addSubmit() {
-      console.log(this.$refs.formData)
-      var that = this
+    addSubmit() {
       this.$refs.formData.validate(valid => {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {
             cancelButtonClass: "btn-custom-cancel"
           })
-            .then(() => {
-              this.formData.id = this.getGuid();
-              let newData = Object.assign({}, this.formData);
+            .then((res) => {
               const old_arr = this.getStroage()
               old_arr.push(newData)
               this.process(old_arr)
               this.brandInfs.push(newData);
               this.filterBrand();
+              console.log(this.brandInfs)
+              // this.process(this.filterBrandInfs)
+              
               this.$message({
                 message: "添加成功",
                 type: "success"
@@ -371,7 +340,7 @@ export default {
             cancelButtonClass: "btn-custom-cancel"
           })
             .then(() => {
-              let brandInfs = this.getStroage();
+              let brandInfs = this.brandInfs;
               let newData = Object.assign({}, this.formData);
               for (let index in brandInfs) {
                 if (brandInfs[index].id == this.id) {
@@ -379,8 +348,6 @@ export default {
                   break;
                 }
               }
-              console.log(brandInfs)
-              this.process(brandInfs)
               this.filterBrand();
               this.$message({
                 message: "修改成功",
@@ -417,36 +384,7 @@ export default {
     formatName(row) {
       return row.name.trim();
     },
-    formatCountry(row) {
-      let countryName;
-      switch (row.country) {
-        case "China":
-          countryName = "中国";
-          break;
-        case "Germany":
-          countryName = "德国";
-          break;
-        case "America":
-          countryName = "美国";
-          break;
-        case "France":
-          countryName = "法国";
-          break;
-        case "Italy":
-          countryName = "意大利";
-          break;
-        case "Japan":
-          countryName = "日本";
-          break;
-        case "Korea":
-          countryName = "韩国";
-          break;
-        default:
-          countryName = "未知";
-          break;
-      }
-      return countryName;
-    },
+
     formatCompany(row) {
       return row.company.length == 0
         ? "未知"

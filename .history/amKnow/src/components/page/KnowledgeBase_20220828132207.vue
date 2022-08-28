@@ -73,17 +73,10 @@
       ></el-table-column>
       <el-table-column
         prop="company"
-        label="规格"
+        label="损坏部位"
         width="200"
         align="center"
         :formatter="formatCompany"
-      ></el-table-column>
-      <el-table-column
-        prop="founder"
-        label="供应商"
-        width="200"
-        align="center"
-        :formatter="formatFounder"
       ></el-table-column>
       <el-table-column prop="time" label="时间" width="200" align="center" :formatter="formatTime"></el-table-column>
       <el-table-column label="操作" min-width="200" align="center" fixed="right">
@@ -139,8 +132,11 @@
       width="32%"
     >
       <el-form :model="formData" label-width="80px" :rules="formRules" ref="formData">
-        <el-form-item label="品牌名称" prop="name" class="row-padding-bottom">
+        <el-form-item label="零件名称" prop="name" class="row-padding-bottom">
           <el-input v-model="formData.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="损坏部位"  class="row-padding-bottom">
+          <el-input v-model="formData.company" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="产地" class="row-padding-bottom">
           <el-select v-model="formData.country" style="width:100%">
@@ -152,9 +148,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="供应商" class="row-padding-bottom">
-          <el-input v-model="formData.founder"></el-input>
-        </el-form-item>
+       
         <el-form-item label="时间">
           <el-date-picker v-model="formData.time" format="yyyy年M月" value-format="yyyy年M月" :default-value="new Date(1935,0)" type="month"></el-date-picker>
         </el-form-item>
@@ -171,7 +165,7 @@
 import store from "@/vuex/store";
 import axios from "axios";
 export default {
-    name:"SparePartsManagement",
+    name:"KnowledgeBase",
   store,
   data() {
     return {
@@ -234,24 +228,8 @@ export default {
   mounted() {
     this.loading = true;
     let that = this;
-    this.filterBrandInfs = JSON.parse(window.localStorage.getItem("spm_data"))
+    this.filterBrandInfs = JSON.parse(window.localStorage.getItem("Knowledge_base"))
     that.loading = false;
-    // axios
-    //   .get(
-    //     "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/brand"
-    //   )
-    //   .then(response => {
-    //     that.brandInfs = response.data;
-    //     that.filterBrand();
-    //     that.loading = false;
-    //   })
-    //   .catch(error => {
-    //     that.$message({
-    //       message: "网络错误,请稍后再试",
-    //       type: "error"
-    //     });
-    //     that.loading = false;
-    //   });
   },
   computed: {
     getShow() {
@@ -262,21 +240,17 @@ export default {
     }
   },
   methods: {
-     getStroage(){
-        return JSON.parse(window.localStorage.getItem("spm_data"))
-    },
-     process(data){
-      console.log(data)
-      window.localStorage.setItem("spm_data",JSON.stringify(data) )
-    },
     searchBrand(){
       this.currentPage = 1;
       this.filterBrand();
     },
+      process(data){
+      console.log(data)
+      window.localStorage.setItem("Knowledge_base",JSON.stringify(data) )
+    },
     filterBrand() {
       let filtersName = this.filters.name.trim();
       let filtersCountry = this.filters.country;
-      this.brandInfs = this.getStroage()
       let filtersBrand = this.brandInfs.filter(item => {
         var isFiltersName = true;
         var isFiltersCountry = true;
@@ -289,6 +263,7 @@ export default {
         return isFiltersName && isFiltersCountry;
       });
       this.filterBrandInfs = filtersBrand;
+      this.process(filterBrandInfs)
     },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
@@ -299,8 +274,8 @@ export default {
       this.addOrEdit = 0;
       this.formData = {
         name: "",
-        company: "",
-        founder: "",
+        company:"",
+        country:"",
         time: ""
       };
     },
@@ -311,20 +286,19 @@ export default {
       this.formData = Object.assign({}, row);
       this.id = row.id;
     },
-     handleDelete(index, row) {
+    handleDelete(index, row) {
       this.$confirm("确认删除该记录吗?", "提示", {
         cancelButtonClass: "btn-custom-cancel",
         type: "warning"
       })
         .then(() => {
-           let brandInfs = this.getStroage();
+          let brandInfs = this.brandInfs;
           for (let index in brandInfs) {
             if (brandInfs[index].id == row.id) {
               brandInfs.splice(index, 1);
               break;
             }
           }
-          this.process(brandInfs)
           this.filterBrand();
           this.$message({
             message: "删除成功",
@@ -335,9 +309,8 @@ export default {
           // this.$message.error("删除失败");
         });
     },
-     addSubmit() {
+    addSubmit() {
       console.log(this.$refs.formData)
-      var that = this
       this.$refs.formData.validate(valid => {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {
@@ -345,10 +318,8 @@ export default {
           })
             .then(() => {
               this.formData.id = this.getGuid();
+              console.log(this.formData)
               let newData = Object.assign({}, this.formData);
-              const old_arr = this.getStroage()
-              old_arr.push(newData)
-              this.process(old_arr)
               this.brandInfs.push(newData);
               this.filterBrand();
               this.$message({
@@ -371,7 +342,7 @@ export default {
             cancelButtonClass: "btn-custom-cancel"
           })
             .then(() => {
-              let brandInfs = this.getStroage();
+              let brandInfs = this.brandInfs;
               let newData = Object.assign({}, this.formData);
               for (let index in brandInfs) {
                 if (brandInfs[index].id == this.id) {
@@ -379,8 +350,6 @@ export default {
                   break;
                 }
               }
-              console.log(brandInfs)
-              this.process(brandInfs)
               this.filterBrand();
               this.$message({
                 message: "修改成功",
@@ -494,6 +463,5 @@ export default {
   min-width: 350px;
 }
 </style>
-
 
 

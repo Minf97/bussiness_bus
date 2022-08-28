@@ -276,7 +276,6 @@ export default {
     filterBrand() {
       let filtersName = this.filters.name.trim();
       let filtersCountry = this.filters.country;
-      this.brandInfs = this.getStroage()
       let filtersBrand = this.brandInfs.filter(item => {
         var isFiltersName = true;
         var isFiltersCountry = true;
