@@ -1,14 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="c39969b2-fab4-487a-be55-c66d470d3e41" name="变更" comment="" />
+    <list default="true" id="c39969b2-fab4-487a-be55-c66d470d3e41" name="变更" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/node_modules/element-ui/packages/form/src/form.vue" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/element-ui/packages/form/src/form.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/AutomobileBrandMng.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/AutomobileBrandMng.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/AutomobileInfMng.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/AutomobileInfMng.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/DispatchManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/DispatchManagement.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/PlanManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/PlanManagement.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/SparePartsManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/SparePartsManagement.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/StockMng.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/StockMng.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/index.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/src/components/page/AutomobileInfMng.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/page/SparePartsManagement.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/page/AutomobileBrandMng.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/page/StockMng.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/page/PlanManagement.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/page/DispatchManagement.vue" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -37,6 +67,10 @@
       <option name="presentableId" value="Default" />
       <updated>1661515003019</updated>
       <workItem from="1661515004937" duration="6545000" />
+      <workItem from="1661691285067" duration="5000" />
+      <workItem from="1661828806467" duration="1866000" />
+      <workItem from="1662022998570" duration="582000" />
+      <workItem from="1662115970935" duration="32902000" />
     </task>
     <servers />
   </component>

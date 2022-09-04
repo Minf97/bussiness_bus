@@ -69,7 +69,8 @@ export default {
     cascader: {
       noMatch: 'Žiadna zhoda',
       loading: 'Načítavanie',
-      placeholder: 'Vybrať'
+      placeholder: 'Vybrať',
+      noData: 'Žiadne dáta'
     },
     pagination: {
       goto: 'Choď na',
@@ -106,6 +107,19 @@ export default {
       filterPlaceholder: 'Filtrovať podľa',
       noCheckedFormat: '{total} položiek',
       hasCheckedFormat: '{checked}/{total} označených'
+    },
+    image: {
+      error: 'Chyba načítania'
+    },
+    pageHeader: {
+      title: 'Späť'
+    },
+    popconfirm: {
+      confirmButtonText: 'Potvrdiť',
+      cancelButtonText: 'Zrušiť'
+    },
+    empty: {
+      description: 'Žiadne dáta'
     }
   }
 };

@@ -10,11 +10,19 @@
           ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input
-            v-model="filters.brand"
-            :placeholder="getShow == 3?'品牌':'汽车品牌'"
-            :class="getShow == 1?'normal-input':(getShow == 2?'middle-input':'small-input')"
-          ></el-input>
+          <el-select
+            v-model="filters.drivingMode"
+            :placeholder="getShow == 3?'驱动':'驱动方式'"
+            :class="getShow == 1?'normal-select':(getShow == 2?'middle-select':'small-select')"
+          >
+            <el-option value>请选择</el-option>
+            <el-option
+              v-for="item in automobileDrivingMode"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-select
@@ -37,7 +45,8 @@
             icon="el-icon-search"
             v-show="getShow == 1"
             @click="searchAutomobile"
-          >查询</el-button>
+          >查询
+          </el-button>
           <el-button
             type="primary"
             icon="el-icon-search"
@@ -71,7 +80,6 @@
       <!-- <el-table-column type="selection" width="48" align="center"></el-table-column> -->
       <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
       <el-table-column prop="name" label="汽车名称" width="92" align="center" :formatter="formatName"></el-table-column>
-      <el-table-column prop="brand" label="品牌" width="92" align="center" :formatter="formatBrand"></el-table-column>
       <el-table-column
         prop="category"
         label="类别"
@@ -115,20 +123,21 @@
         align="center"
         :formatter="formatYearStyle"
       ></el-table-column>
-      <el-table-column prop="price" label="售价" width="92" align="center" :formatter="formatPrice"></el-table-column>
       <el-table-column label="操作" min-width="200" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button
             size="small"
             icon="el-icon-edit"
             @click="handleEdit(scope.$index, scope.row)"
-          >编辑</el-button>
+          >编辑
+          </el-button>
           <el-button
             type="danger"
             icon="el-icon-delete"
             size="small"
             @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button>
+          >删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -172,11 +181,6 @@
           <el-col :span="12" class="col-position">
             <el-form-item label="汽车名称" prop="name">
               <el-input v-model="formData.name" autocomplete="off"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="品牌">
-              <el-input v-model="formData.brand"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -237,11 +241,6 @@
               <el-input v-model="formData.yearStyle"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="售价" prop="price">
-              <el-input v-model="formData.price" placeholder="万/辆"></el-input>
-            </el-form-item>
-          </el-col>
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -255,6 +254,7 @@
 <script>
 import store from "@/vuex/store";
 import axios from "axios";
+
 export default {
   name: "AutomobileInfMng",
   store,
@@ -267,48 +267,80 @@ export default {
       // sels: [],
       filters: {
         name: "",
-        brand: "",
+        drivingMode: "",
         category: ""
       },
       automobileCategorys: [
         {
-          label: "轿车",
-          value: "car"
+          label: "小巴",
+          value: "small"
         },
         {
-          label: "SUV",
-          value: "suv"
+          label: "中巴",
+          value: "middle"
         },
         {
-          label: "MPV",
-          value: "mpv"
+          label: "大巴",
+          value: "big"
         },
         {
-          label: "跑车",
-          value: "sportscar"
+          label: "双层巴",
+          value: "double"
+        }
+      ],
+      automobileDrivingMode: [
+        {
+          label: "两驱",
+          value: 0
         },
         {
-          label: "皮卡",
-          value: "pickup"
-        },
-        {
-          label: "微面",
-          value: "minivan"
-        },
-        {
-          label: "微卡",
-          value: "minitruck"
-        },
-        {
-          label: "轻客",
-          value: "lightbus"
+          label: "四驱",
+          value: 1
         }
       ],
       filterAutomobileInfs: [],
       formVisible: false, //新增编辑界面是否显示
       formData: {}, //新增编辑界面数据
       addOrEdit: 0, //add——0  edit——1
-      automobileInfs: [],
+      automobileInfs:    // 总车辆信息, 兜底数据
+        [{
+          "name": "M762",
+          "brand": "",
+          "category": "big",
+          "engine": "6000CC",
+          "gearbox": "6档手自一体",
+          "drivingMode": 0,
+          "energy": 0,
+          "seatNumber": 48,
+          "yearStyle": "2013款",
+          "price": null,
+          "id": "e85310e6-895a-55ea-e9b9-46a20ebb5887"
+        }, {
+          "name": "M766",
+          "brand": "",
+          "category": "middle",
+          "engine": "4000CC",
+          "gearbox": "5档手动",
+          "drivingMode": 0,
+          "energy": 0,
+          "seatNumber": 23,
+          "yearStyle": "2013款",
+          "price": null,
+          "id": "6d66c4d4-b54f-c910-0624-3df2dbcc993d"
+        }, {
+          "name": "B303",
+          "brand": "",
+          "category": "small",
+          "engine": "3000CC",
+          "gearbox": "7档双离合",
+          "drivingMode": 0,
+          "energy": 3,
+          "seatNumber": 13,
+          "yearStyle": "2018款",
+          "price": null,
+          "id": "c3b477ca-e192-6763-7b56-e1be9c161375"
+        }]
+      ,
       formRules: {
         name: [
           {
@@ -331,22 +363,31 @@ export default {
   mounted() {
     this.loading = true;
     let that = this;
-    axios
-      .get(
-        "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/automobile"
-      )
-      .then(response => {
-        that.automobileInfs = response.data;
-        that.filterAutomobile();
-        that.loading = false;
-      })
-      .catch(error => {
-        that.$message({
-          message: "网络错误,请稍后再试",
-          type: "error"
-        });
-        that.loading = false;
-      });
+    //获得车辆信息
+    setTimeout(() => {
+      if (localStorage.getItem('carInfo')) {
+        this.automobileInfs = JSON.parse(localStorage.getItem('carInfo')) || this.automobileInfs;
+        this.filterAutomobile();
+      }
+      this.loading = false;
+    }, 500)
+
+    // axios
+    //   .get(
+    //     "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/automobile"
+    //   )
+    //   .then(response => {
+    //     that.automobileInfs = response.data;
+    //     that.filterAutomobile();
+    //     that.loading = false;
+    //   })
+    //   .catch(error => {
+    //     that.$message({
+    //       message: "网络错误,请稍后再试",
+    //       type: "error"
+    //     });
+    //     that.loading = false;
+    //   });
   },
   computed: {
     getShow() {
@@ -366,22 +407,26 @@ export default {
     },
     filterAutomobile() {
       let filtersName = this.filters.name.trim();
-      let filtersBrand = this.filters.brand.trim();
+      let filtersDrivingMode = this.filters.drivingMode;
       let filtersCategory = this.filters.category;
+
       let filtersAutomobile = this.automobileInfs.filter(item => {
+        //标志位
         var isFiltersName = true;
-        var isFiltersBrand = true;
+        var isFiltersDrivingMode = true;
         var isFiltersCategory = true;
+        //判断
         if (filtersName.length != 0) {
           isFiltersName = item.name.indexOf(filtersName) != -1;
         }
-        if (filtersBrand.length != 0) {
-          isFiltersBrand = item.brand == filtersBrand;
+        if (filtersDrivingMode.length != 0) {
+          console.log(filtersDrivingMode, item.drivingMode, item.drivingMode === filtersDrivingMode)
+          isFiltersDrivingMode = item.drivingMode === filtersDrivingMode;
         }
         if (filtersCategory.length != 0) {
           isFiltersCategory = item.category == filtersCategory;
         }
-        return isFiltersName && isFiltersBrand && isFiltersCategory;
+        return isFiltersName && isFiltersDrivingMode && isFiltersCategory;
       });
       this.filterAutomobileInfs = filtersAutomobile;
     },
@@ -402,7 +447,8 @@ export default {
         energy: null,
         seatNumber: 5,
         yearStyle: "",
-        price: null
+        price: null,
+        status: 3
       };
     },
     //显示编辑界面
@@ -425,11 +471,16 @@ export default {
               break;
             }
           }
+          //更改缓存
+          localStorage.setItem('carInfo', JSON.stringify(this.automobileInfs));
           this.filterAutomobile();
           this.$message({
             message: "删除成功",
             type: "success"
           });
+          setTimeout(() => {
+            location.reload();
+          }, 500)
         })
         .catch(() => {
           // this.$message.error("删除失败");
@@ -445,6 +496,11 @@ export default {
               this.formData.id = this.getGuid();
               let newData = Object.assign({}, this.formData);
               this.automobileInfs.push(newData);
+              // 存入缓存
+              let storage = JSON.parse(localStorage.getItem('carInfo')) || [];
+              storage.push(this.formData);
+              localStorage.setItem('carInfo', JSON.stringify(storage));
+              //校验
               this.filterAutomobile();
               this.$message({
                 message: "添加成功",
@@ -474,6 +530,9 @@ export default {
                   break;
                 }
               }
+              //存入缓存
+              localStorage.setItem('carInfo', JSON.stringify(automobileInfs))
+              //校验
               this.filterAutomobile();
               this.$message({
                 message: "修改成功",
@@ -517,45 +576,23 @@ export default {
         S4()
       );
     },
-    // selsChange(sels) {
-    //   this.sels = sels;
-    // },
     formatName(row) {
       return row.name.trim();
-    },
-    formatBrand(row) {
-      return row.brand.length == 0
-        ? "未知"
-        : row.brand.trim().length == 0
-        ? "未知"
-        : row.brand.trim();
     },
     formatCategory(row) {
       let categoryName;
       switch (row.category) {
-        case "car":
-          categoryName = "轿车";
+        case "small":
+          categoryName = "小巴";
           break;
-        case "suv":
-          categoryName = "SUV";
+        case "middle":
+          categoryName = "中巴";
           break;
-        case "mpv":
-          categoryName = "MPV";
+        case "big":
+          categoryName = "大巴";
           break;
-        case "sportscar":
-          categoryName = "跑车";
-          break;
-        case "pickup":
-          categoryName = "皮卡";
-          break;
-        case "minivan":
-          categoryName = "微面";
-          break;
-        case "minitruck":
-          categoryName = "微卡";
-          break;
-        case "lightbus":
-          categoryName = "轻客";
+        case "double":
+          categoryName = "双层巴";
           break;
         default:
           categoryName = "未知";
@@ -567,33 +604,33 @@ export default {
       return row.engine.length == 0
         ? "未知"
         : row.engine.trim().length == 0
-        ? "未知"
-        : row.engine.trim();
+          ? "未知"
+          : row.engine.trim();
     },
     formatGearbox(row) {
       return row.gearbox.length == 0
         ? "未知"
         : row.gearbox.trim().length == 0
-        ? "未知"
-        : row.gearbox.trim();
+          ? "未知"
+          : row.gearbox.trim();
     },
     formatDrivingMode(row) {
       return row.drivingMode === 0
         ? "两驱"
         : row.drivingMode == 1
-        ? "四驱"
-        : "未知";
+          ? "四驱"
+          : "未知";
     },
     formatEnergy(row) {
       return row.energy === 0
         ? "汽油"
         : row.energy == 1
-        ? "柴油"
-        : row.energy == 2
-        ? "纯电动"
-        : row.energy == 3
-        ? "油电混合"
-        : "未知";
+          ? "柴油"
+          : row.energy == 2
+            ? "纯电动"
+            : row.energy == 3
+              ? "油电混合"
+              : "未知";
     },
     formatSeatNumber(row) {
       return row.seatNumber.toString() + "座";
@@ -602,8 +639,8 @@ export default {
       return row.yearStyle.length == 0
         ? "未知"
         : row.yearStyle.trim().length == 0
-        ? "未知"
-        : row.yearStyle.trim();
+          ? "未知"
+          : row.yearStyle.trim();
     },
     formatPrice(row) {
       return row.price == null ? "未知" : row.price.toString() + "万";
@@ -616,25 +653,32 @@ export default {
 .small-input {
   width: 60px;
 }
+
 .middle-input {
   width: 100px;
 }
+
 .normal-input {
   width: 180px;
 }
+
 .small-select {
   width: 80px;
 }
+
 .middle-select {
   width: 120px;
 }
+
 .normal-select {
   width: 200px;
 }
+
 .col-position {
   position: relative;
   right: 5px;
 }
+
 .dialog-minwidth {
   min-width: 560px;
 }

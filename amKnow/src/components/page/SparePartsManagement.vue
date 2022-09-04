@@ -79,6 +79,12 @@
         :formatter="formatCompany"
       ></el-table-column>
       <el-table-column
+        prop="total"
+        label="数量"
+        width="200"
+        align="center"
+      ></el-table-column>
+      <el-table-column
         prop="founder"
         label="供应商"
         width="200"
@@ -175,6 +181,7 @@ export default {
   store,
   data() {
     return {
+      demo: localStorage.getItem('spm_data'),
       loading: false,
       pagesize: 10,
       currentPage: 1,
@@ -231,10 +238,25 @@ export default {
       }
     };
   },
+  watch: {
+      demo(newVal, oldVal) {
+        console.log(newVal, "ddddwsd")
+    }
+  },
+  beforeCreate() {
+    console.log("skdnks")
+  },
+  created() {
+    console.log("ccccc")
+  },
+  beforeMount() {
+    console.log("ccccc")
+  },
   mounted() {
     this.loading = true;
     let that = this;
-    this.filterBrandInfs = JSON.parse(window.localStorage.getItem("spm_data"))
+    this.filterBrandInfs = JSON.parse(localStorage.getItem("spm_data"));
+    console.log("dddd")
     that.loading = false;
     // axios
     //   .get(

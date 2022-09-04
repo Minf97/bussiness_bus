@@ -49,14 +49,28 @@
     },
     watch: {
       rules() {
+        // remove then add event listeners on form-item after form rules change
+        this.fields.forEach(field => {
+          field.removeValidateEvents();
+          field.addValidateEvents();
+        });
+
         if (this.validateOnRuleChange) {
           this.validate(() => {});
         }
       }
     },
+    computed: {
+      autoLabelWidth() {
+        if (!this.potentialLabelWidthArr.length) return 0;
+        const max = Math.max(...this.potentialLabelWidthArr);
+        return max ? `${max}px` : '';
+      }
+    },
     data() {
       return {
-        fields: []
+        fields: [],
+        potentialLabelWidthArr: [] // use this array to calculate auto width
       };
     },
     created() {
@@ -102,8 +116,8 @@
         // if no callback, return promise
         if (typeof callback !== 'function' && window.Promise) {
           promise = new window.Promise((resolve, reject) => {
-            callback = function(valid) {
-              valid ? resolve(valid) : reject(valid);
+            callback = function(valid, invalidFields) {
+              valid ? resolve(valid) : reject(invalidFields);
             };
           });
         }
@@ -142,6 +156,26 @@
         fields.forEach(field => {
           field.validate('', cb);
         });
+      },
+      getLabelWidthIndex(width) {
+        const index = this.potentialLabelWidthArr.indexOf(width);
+        // it's impossible
+        if (index === -1) {
+          throw new Error('[ElementForm]unpected width ', width);
+        }
+        return index;
+      },
+      registerLabelWidth(val, oldVal) {
+        if (val && oldVal) {
+          const index = this.getLabelWidthIndex(oldVal);
+          this.potentialLabelWidthArr.splice(index, 1, val);
+        } else if (val) {
+          this.potentialLabelWidthArr.push(val);
+        }
+      },
+      deregisterLabelWidth(val) {
+        const index = this.getLabelWidthIndex(val);
+        this.potentialLabelWidthArr.splice(index, 1);
       }
     }
   };

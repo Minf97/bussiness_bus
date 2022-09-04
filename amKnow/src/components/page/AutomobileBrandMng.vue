@@ -5,19 +5,19 @@
         <el-form-item>
           <el-input
             v-model="filters.name"
-            :placeholder="getShow == 3?'名称':'品牌名称'"
+            :placeholder="getShow == 3?'名称':'汽车名称'"
             :class="getShow == 1?'normal-input':(getShow == 2?'middle-input':'small-input')"
           ></el-input>
         </el-form-item>
         <el-form-item>
           <el-select
-            v-model="filters.country"
-            placeholder="国家"
+            v-model="filters.status"
+            placeholder="状态"
             :class="getShow == 1?'normal-select':(getShow == 2?'middle-select':'small-select')"
           >
             <el-option value>请选择</el-option>
             <el-option
-              v-for="item in countries"
+              v-for="item in statusArr"
               :key="item.value"
               :label="item.label"
               :value="item.value"
@@ -40,17 +40,6 @@
             @click="searchBrand"
           ></el-button>
         </el-form-item>
-        <el-form-item class="add-button">
-          <el-button type="success" icon="el-icon-plus" v-show="getShow == 1" @click="handleAdd">新增</el-button>
-          <el-button
-            type="success"
-            icon="el-icon-plus"
-            title="新增"
-            v-show="getShow != 1"
-            circle
-            @click="handleAdd"
-          ></el-button>
-        </el-form-item>
       </el-form>
     </el-col>
     <el-table
@@ -63,29 +52,22 @@
     >
       <!-- <el-table-column type="selection" width="48" align="center"></el-table-column> -->
       <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
-      <el-table-column prop="name" label="品牌名称" width="140" align="center" :formatter="formatName"></el-table-column>
+      <el-table-column prop="name" label="汽车名称" width="140" align="center" :formatter="formatName"></el-table-column>
       <el-table-column
-        prop="country"
-        label="国家"
+        prop="category"
+        label="类别"
         width="140"
         align="center"
-        :formatter="formatCountry"
+        :formatter="formatCategory"
       ></el-table-column>
       <el-table-column
-        prop="company"
-        label="所属公司"
+        prop="status"
+        label="状态"
         width="200"
         align="center"
-        :formatter="formatCompany"
+        :formatter="formatStatus"
       ></el-table-column>
-      <el-table-column
-        prop="founder"
-        label="创始人"
-        width="200"
-        align="center"
-        :formatter="formatFounder"
-      ></el-table-column>
-      <el-table-column prop="time" label="创立时间" width="200" align="center" :formatter="formatTime"></el-table-column>
+
       <el-table-column label="操作" min-width="200" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button
@@ -139,27 +121,18 @@
       width="32%"
     >
       <el-form :model="formData" label-width="80px" :rules="formRules" ref="formData">
-        <el-form-item label="品牌名称" prop="name" class="row-padding-bottom">
+        <el-form-item label="汽车名称" prop="name" class="row-padding-bottom">
           <el-input v-model="formData.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="国家" class="row-padding-bottom">
-          <el-select v-model="formData.country" style="width:100%">
+        <el-form-item label="状态" class="row-padding-bottom">
+          <el-select v-model="formData.status" style="width:100%">
             <el-option
-              v-for="item in countries"
+              v-for="item in statusArr"
               :key="item.value"
               :label="item.label"
               :value="item.value"
             ></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="所属公司" class="row-padding-bottom">
-          <el-input v-model="formData.company"></el-input>
-        </el-form-item>
-        <el-form-item label="创始人" class="row-padding-bottom">
-          <el-input v-model="formData.founder"></el-input>
-        </el-form-item>
-        <el-form-item label="创立时间">
-          <el-date-picker v-model="formData.time" format="yyyy年M月" value-format="yyyy年M月" :default-value="new Date(1935,0)" type="month"></el-date-picker>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -185,36 +158,24 @@ export default {
       // sels: [],
       filters: {
         name: "",
-        country: ""
+        status: ""
       },
-      countries: [
+      statusArr: [
         {
-          label: "中国",
-          value: "China"
+          label: "待维修",
+          value: 0
         },
         {
-          label: "德国",
-          value: "Germany"
+          label: "待派单",
+          value: 1
         },
         {
-          label: "美国",
-          value: "America"
+          label: "维修中",
+          value: 2
         },
         {
-          label: "法国",
-          value: "France"
-        },
-        {
-          label: "意大利",
-          value: "Italy"
-        },
-        {
-          label: "日本",
-          value: "Japan"
-        },
-        {
-          label: "韩国",
-          value: "Korea"
+          label: "正常",
+          value: 3
         }
       ],
       filterBrandInfs: [],
@@ -236,23 +197,27 @@ export default {
   },
   mounted() {
     this.loading = true;
-    let that = this;
-    axios
-      .get(
-        "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/brand"
-      )
-      .then(response => {
-        that.brandInfs = response.data;
-        that.filterBrand();
-        that.loading = false;
-      })
-      .catch(error => {
-        that.$message({
-          message: "网络错误,请稍后再试",
-          type: "error"
-        });
-        that.loading = false;
-      });
+    setTimeout(() => {
+      this.brandInfs = JSON.parse(localStorage.getItem('carInfo')) || [];
+      this.filterBrand();
+      this.loading = false;
+    }, 500)
+    // axios
+    //   .get(
+    //     "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/brand"
+    //   )
+    //   .then(response => {
+    //     that.brandInfs = response.data;
+    //     that.filterBrand();
+    //     that.loading = false;
+    //   })
+    //   .catch(error => {
+    //     that.$message({
+    //       message: "网络错误,请稍后再试",
+    //       type: "error"
+    //     });
+    //     that.loading = false;
+    //   });
   },
   computed: {
     getShow() {
@@ -263,23 +228,45 @@ export default {
     }
   },
   methods: {
+    formatCategory(row) {
+      let categoryName;
+      switch (row.category) {
+        case "small":
+          categoryName = "小巴";
+          break;
+        case "middle":
+          categoryName = "中巴";
+          break;
+        case "big":
+          categoryName = "大巴";
+          break;
+        case "double":
+          categoryName = "双层巴";
+          break;
+        default:
+          categoryName = "未知";
+          break;
+      }
+      return categoryName;
+    },
     searchBrand(){
       this.currentPage = 1;
       this.filterBrand();
     },
     filterBrand() {
       let filtersName = this.filters.name.trim();
-      let filtersCountry = this.filters.country;
+      let filtersStatus = this.filters.status;
+
       let filtersBrand = this.brandInfs.filter(item => {
         var isFiltersName = true;
-        var isFiltersCountry = true;
+        var isFiltersStatus = true;
         if (filtersName.length != 0) {
           isFiltersName = (item.name.indexOf(filtersName) != -1);
         }
-        if (filtersCountry.length != 0) {
-          isFiltersCountry = (item.country == filtersCountry);
+        if (filtersStatus.length != 0) {
+          isFiltersStatus = (item.status == filtersStatus);
         }
-        return isFiltersName && isFiltersCountry;
+        return isFiltersName && isFiltersStatus;
       });
       this.filterBrandInfs = filtersBrand;
     },
@@ -292,9 +279,8 @@ export default {
       this.addOrEdit = 0;
       this.formData = {
         name: "",
-        country: "",
-        company: "",
-        founder: "",
+        category: "",
+        status: "",
         time: ""
       };
     },
@@ -319,6 +305,10 @@ export default {
             }
           }
           this.filterBrand();
+          localStorage.setItem('carInfo', JSON.stringify(brandInfs));
+          setTimeout(() => {
+            location.reload();
+          }, 500)
           this.$message({
             message: "删除成功",
             type: "success"
@@ -338,6 +328,8 @@ export default {
               this.formData.id = this.getGuid();
               let newData = Object.assign({}, this.formData);
               this.brandInfs.push(newData);
+              //存缓存
+              localStorage.setItem('carInfo', JSON.stringify(this.brandInfs));
               this.filterBrand();
               this.$message({
                 message: "添加成功",
@@ -367,6 +359,7 @@ export default {
                   break;
                 }
               }
+              localStorage.setItem('carInfo', JSON.stringify(brandInfs));
               this.filterBrand();
               this.$message({
                 message: "修改成功",
@@ -403,49 +396,26 @@ export default {
     formatName(row) {
       return row.name.trim();
     },
-    formatCountry(row) {
-      let countryName;
-      switch (row.country) {
-        case "China":
-          countryName = "中国";
+    formatStatus(row) {
+      let status;
+      switch (row.status) {
+        case 0:
+          status = "待维修";
           break;
-        case "Germany":
-          countryName = "德国";
+        case 1:
+          status = "待派单";
           break;
-        case "America":
-          countryName = "美国";
+        case 2:
+          status = "维修中";
           break;
-        case "France":
-          countryName = "法国";
-          break;
-        case "Italy":
-          countryName = "意大利";
-          break;
-        case "Japan":
-          countryName = "日本";
-          break;
-        case "Korea":
-          countryName = "韩国";
+        case 3:
+          status = "正常";
           break;
         default:
-          countryName = "未知";
+          status = "未知";
           break;
       }
-      return countryName;
-    },
-    formatCompany(row) {
-      return row.company.length == 0
-        ? "未知"
-        : row.company.trim().length == 0
-        ? "未知"
-        : row.company.trim();
-    },
-    formatFounder(row) {
-      return row.founder.length == 0
-        ? "未知"
-        : row.founder.trim().length == 0
-        ? "未知"
-        : row.founder.trim();
+      return status;
     },
     formatTime(row) {
       return row.time.length == 0

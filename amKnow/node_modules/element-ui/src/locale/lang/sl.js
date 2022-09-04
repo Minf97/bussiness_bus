@@ -67,7 +67,8 @@ export default {
     cascader: {
       noMatch: 'Ni ustreznih podatkov',
       loading: 'Nalaganje',
-      placeholder: 'Izberi'
+      placeholder: 'Izberi',
+      noData: 'Ni podatkov'
     },
     pagination: {
       goto: 'Pojdi na',
@@ -104,6 +105,19 @@ export default {
       filterPlaceholder: 'Vnesi ključno besedo',
       noCheckedFormat: '{total} elementov',
       hasCheckedFormat: '{checked}/{total} izbranih'
+    },
+    image: {
+      error: 'NEUSPELO'
+    },
+    pageHeader: {
+      title: 'Nazaj'
+    },
+    popconfirm: {
+      confirmButtonText: 'Da',
+      cancelButtonText: 'Ne'
+    },
+    empty: {
+      description: 'Ni podatkov'
     }
   }
 };

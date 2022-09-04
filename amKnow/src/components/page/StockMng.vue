@@ -1,158 +1,307 @@
 <template>
-  <div class="all-tabs">
-    <el-tabs type="border-card" v-model="tabValue" @tab-click="handleClick" v-loading="loading" stretch>
-      <template v-for="automobileCategory in automobileCategorys">
-        <el-tab-pane
-          :key="automobileCategory.value"
-          :label="automobileCategory.label"
-          :name="automobileCategory.value"
-          :class="filterAutomobileStock.length == 0 ? 'tab-small' : 'tab-normal'"
-        >
-          <el-col
-            :span="getShow < 3 ? 4 : 7"
-            v-for="(item,index) in filterAutomobileStock"
-            :key="item.name"
-            :offset="index > 0 && index % 4 != 0 && getShow < 3 ? 2 : 1"
-            :class="(index >= 4 && getShow < 3) || (index >= 3 && getShow >= 3) ? 'col-padding-rest' : 'col-padding-first'"
+  <div>
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+      <el-form :inline="true" :model="filters">
+        <el-form-item>
+          <el-input
+            v-model="filters.name"
+            :placeholder="getShow == 3?'名称':'汽车名称'"
+            :class="getShow == 1?'normal-input':(getShow == 2?'middle-input':'small-input')"
+          ></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-select
+            v-model="filters.category"
+            :placeholder="getShow == 3?'类别':'汽车类别'"
+            :class="getShow == 1?'normal-select':(getShow == 2?'middle-select':'small-select')"
           >
-            <el-card :body-style="{ padding: '0px',width:'100%' }" shadow="hover">
-              <img :src="item.image" :alt="item.name" width="100%" v-if="item.image">
-              <div class="card-content">
-                <span :class="getShow <= 2 ? 'name-small' : 'name-mini'">
-                  <strong>{{item.name}}</strong>
-                </span>
-                <br>
-                <span :class="getShow <= 2 ? 'stock-small' : 'stock-mini'">
-                  库存量:
-                  <strong>{{item.inventory}}</strong>辆
-                </span>
-                <br>
-                <div class="button-padding-top">
-                  <el-button
-                    type="warning"
-                    icon="el-icon-edit-outline"
-                    size="small"
-                    v-show="getShow == 1"
-                    @click="handleChange(item.name,item.inventory)"
-                    round
-                    plain
-                  >库存变更</el-button>
-                  <el-button
-                    type="warning"
-                    icon="el-icon-edit-outline"
-                    :size="getShow >= 3 ? 'mini':'small'"
-                    title="库存变更"
-                    v-show="getShow != 1"
-                    @click="handleChange(item.name,item.inventory)"
-                    circle
-                    plain
-                  ></el-button>
-                </div>
-              </div>
-            </el-card>
-          </el-col>
-          <div v-if="filterAutomobileStock.length == 0" style="color:#909399;">
-            <span>暂无数据</span>
-          </div>
-        </el-tab-pane>
-      </template>
-    </el-tabs>
+            <el-option value>请选择</el-option>
+            <el-option
+              v-for="item in automobileCategorys"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            v-show="getShow == 1"
+            @click="searchAutomobile"
+          >查询
+          </el-button>
+          <el-button
+            type="primary"
+            icon="el-icon-search"
+            title="查询"
+            v-show="getShow != 1"
+            circle
+            @click="searchAutomobile"
+          ></el-button>
+        </el-form-item>
+      </el-form>
+    </el-col>
+    <el-table
+      :data="showTable"
+      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
+      highlight-current-row
+      height="400"
+      style="border:1px solid #dfe6ec;"
+      v-loading="loading"
+    >
+      <!-- <el-table-column type="selection" width="48" align="center"></el-table-column> -->
+      <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
+      <el-table-column prop="name" label="汽车名称" width="92" align="center" :formatter="formatName"></el-table-column>
+      <el-table-column
+        prop="category"
+        label="类别"
+        width="120"
+        align="center"
+        :formatter="formatCategory"
+      ></el-table-column>
+      <el-table-column
+        prop="status"
+        label="状态"
+        width="120"
+        align="center"
+        :formatter="formatStatus"
+      ></el-table-column>
+      <el-table-column label="操作" min-width="200" align="center" fixed="right">
+        <template slot-scope="scope">
+          <el-button
+            size="small"
+            icon="el-icon-edit"
+            @click="handleEdit(scope.$index, scope.row)"
+          >检修
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <!--工具条-->
+    <el-col :span="24" class="toolbar" style="text-align:center">
+      <!-- <el-button
+        type="danger"
+        icon="el-icon-delete"
+        @click="batchRemove"
+        v-show="getShow == 1"
+        :disabled="this.sels.length===0"
+        style="float:left"
+      >批量删除</el-button>
+      <el-button
+        type="danger"
+        icon="el-icon-delete"
+        title="批量删除"
+        @click="batchRemove"
+        v-show="getShow != 1"
+        :disabled="this.sels.length===0"
+        style="float:left"
+      ></el-button>-->
+      <el-pagination
+        @current-change="handleCurrentChange"
+        layout="total, prev, pager, next"
+        :page-size="pagesize"
+        :total="this.filterAutomobileInfs.length"
+      ></el-pagination>
+    </el-col>
 
-    <!--库存变更界面-->
+    <!--新增编辑界面-->
     <el-dialog
-      title="库存变更"
+      :title="addOrEdit == 0 ? '新增' : '检修'"
       :visible.sync="formVisible"
       :close-on-click-modal="false"
       @close="closeDialog"
-      custom-class="brand-dialog-min-width"
-      top="28vh"
-      width="32%"
+      custom-class="dialog-minwidth"
     >
       <el-form :model="formData" label-width="80px" :rules="formRules" ref="formData">
-        <el-form-item label="操作" class="row-padding-bottom">
-          <el-switch
-            v-model="formData.operation"
-            active-color="#98FB98"
-            inactive-color="#FA8072"
-            active-text="增加"
-            inactive-text="减少"
-            :disabled="stockNumber == 0"
-          ></el-switch>
-        </el-form-item>
-        <el-form-item label="变更数量" prop="number" class="row-padding-bottom">
-          <el-input type="age" v-model.number="formData.number" autocomplete="off"></el-input>
-        </el-form-item>
+        <el-row class="row-padding-bottom">
+          <el-col :span="12" class="col-position">
+            <el-form-item label="汽车名称" prop="name">
+              <el-input v-model="formData.name" autocomplete="off"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-row>
+        <el-row class="row-padding-bottom">
+          <el-col :span="12" class="col-position">
+            <el-form-item label="类别">
+              <el-select v-model="formData.category" style="width:100%">
+                <el-option
+                  v-for="item in automobileCategorys"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" class="col-position">
+            <el-form-item label="检修人">
+              <el-select v-model="formData.people" style="width:100%">
+                <el-option
+                  v-for="item in people"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" class="col-position">
+            <el-form-item label="故障区域">
+              <el-select v-model="formData.badArea" style="width:100%">
+                <el-option
+                  v-for="item in badArea"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click.native="changeSubmit">提交</el-button>
+        <el-button type="primary" v-show="addOrEdit == 0" @click.native="addSubmit">提交</el-button>
+        <el-button type="primary" v-show="addOrEdit == 1" @click.native="editSubmit">提交</el-button>
         <el-button @click.native="handleClose">取消</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
-
 <script>
 import store from "@/vuex/store";
 import axios from "axios";
+
 export default {
-  name: "StockMng",
+  name: "AutomobileInfMng",
   store,
   data() {
-    let checkNumber = (rule, value, callback) => {
-      if (!this.formData.operation && value > this.stockNumber) {
-        return callback(new Error("减少量不能多于库存量"));
-      } else {
-        callback();
-      }
-    };
     return {
       loading: false,
-      tabValue: "car",
-      filterAutomobileStock: [],
-      formVisible: false, //变更界面是否显示
-      formData: {}, //变更界面数据
-      changeObject: "", //当然变更对象
-      stockNumber: 0, //当然变更对象库存量
+      pagesize: 10,
+      currentPage: 1,
+      id: "", //原数据id
+      // sels: [],
+      filters: {
+        name: "",
+        drivingMode: "",
+        category: ""
+      },
       automobileCategorys: [
         {
-          label: "轿车",
-          value: "car"
+          label: "小巴",
+          value: "small"
         },
         {
-          label: "SUV",
-          value: "suv"
+          label: "中巴",
+          value: "middle"
         },
         {
-          label: "MPV",
-          value: "mpv"
+          label: "大巴",
+          value: "big"
         },
         {
-          label: "跑车",
-          value: "sportscar"
-        },
-        {
-          label: "皮卡",
-          value: "pickup"
-        },
-        {
-          label: "微面",
-          value: "minivan"
-        },
-        {
-          label: "微卡",
-          value: "minitruck"
-        },
-        {
-          label: "轻客",
-          value: "lightbus"
+          label: "双层巴",
+          value: "double"
         }
       ],
-      automobileStock: [],
+      automobileDrivingMode: [
+        {
+          label: "两驱",
+          value: 0
+        },
+        {
+          label: "四驱",
+          value: 1
+        }
+      ],
+      people: [
+        {
+          label: "陈师傅",
+          value: 0,
+        },
+        {
+          label: "邓师傅",
+          value: 1
+        },
+        {
+          label: "王师傅",
+          value: 2
+        }
+      ],
+      badArea: [
+        {
+          label: "车头",
+          value: 0
+        },
+        {
+          label: "车身",
+          value: 1
+        },
+        {
+          label: "下侧",
+          value: 2
+        }
+      ],
+      filterAutomobileInfs: [],
+      formVisible: false, //新增编辑界面是否显示
+      formData: {}, //新增编辑界面数据
+      addOrEdit: 0, //add——0  edit——1
+      automobileInfs:    // 总车辆信息, 兜底数据
+        [{
+          "name": "M762",
+          "brand": "",
+          "category": "big",
+          "engine": "6000CC",
+          "gearbox": "6档手自一体",
+          "drivingMode": 0,
+          "energy": 0,
+          "seatNumber": 48,
+          "yearStyle": "2013款",
+          "price": null,
+          "id": "e85310e6-895a-55ea-e9b9-46a20ebb5887"
+        }, {
+          "name": "M766",
+          "brand": "",
+          "category": "middle",
+          "engine": "4000CC",
+          "gearbox": "5档手动",
+          "drivingMode": 0,
+          "energy": 0,
+          "seatNumber": 23,
+          "yearStyle": "2013款",
+          "price": null,
+          "id": "6d66c4d4-b54f-c910-0624-3df2dbcc993d"
+        }, {
+          "name": "B303",
+          "brand": "",
+          "category": "small",
+          "engine": "3000CC",
+          "gearbox": "7档双离合",
+          "drivingMode": 0,
+          "energy": 3,
+          "seatNumber": 13,
+          "yearStyle": "2018款",
+          "price": null,
+          "id": "c3b477ca-e192-6763-7b56-e1be9c161375"
+        }]
+      ,
       formRules: {
-        number: [
-          { required: true, message: "请输入变更数量", trigger: "blur" },
-          { pattern: /^[1-9]\d*$/, message: "请输入正整数", trigger: "blur" },
-          { validator: checkNumber, trigger: "blur" }
+        name: [
+          {
+            required: true,
+            pattern: /^[\s\S]*.*[^\s][\s\S]*$/,
+            message: "请输入汽车名称",
+            trigger: "blur"
+          }
+        ],
+        price: [
+          {
+            pattern: /(^[1-9](\d+)?(\.\d{1,2})?$)|(^\d\.\d{1,2}$)/,
+            message: "请输入大于0并且小数点最多两位的数字",
+            trigger: "blur"
+          }
         ]
       }
     };
@@ -160,147 +309,304 @@ export default {
   mounted() {
     this.loading = true;
     let that = this;
-    axios
-      .get(
-        "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/stock"
-      )
-      .then(response => {
-        that.automobileStock = response.data;
-        that.filterStock();
-        that.loading = false;
-      })
-      .catch(error => {
-        that.$message({
-          message: "网络错误,请稍后再试",
-          type: "error"
-        });
-        that.loading = false;
-      });
+    //获得车辆信息
+    setTimeout(() => {
+      if (localStorage.getItem('carInfo')) {
+        this.automobileInfs = JSON.parse(localStorage.getItem('carInfo')) || this.automobileInfs;
+        this.filterAutomobile();
+      }
+      this.loading = false;
+    }, 500)
+
+    // axios
+    //   .get(
+    //     "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/automobile"
+    //   )
+    //   .then(response => {
+    //     that.automobileInfs = response.data;
+    //     that.filterAutomobile();
+    //     that.loading = false;
+    //   })
+    //   .catch(error => {
+    //     that.$message({
+    //       message: "网络错误,请稍后再试",
+    //       type: "error"
+    //     });
+    //     that.loading = false;
+    //   });
   },
   computed: {
     getShow() {
       return this.$store.state.isShow;
+    },
+    showTable() {
+      return this.filterAutomobileInfs.slice(
+        (this.currentPage - 1) * this.pagesize,
+        this.currentPage * this.pagesize
+      );
     }
   },
   methods: {
-    handleClick(tab) {
-      this.tabValue = tab.name;
-      this.filterStock();
+    searchAutomobile() {
+      this.currentPage = 1;
+      this.filterAutomobile();
     },
-    filterStock() {
-      let tabValue = this.tabValue;
-      let filterAutomobileStock = this.automobileStock.filter(item => {
-        return item.category == tabValue;
-      });
-      this.filterAutomobileStock = filterAutomobileStock;
-    },
-    handleChange(name, inventory) {
-      this.formVisible = true;
-      if (inventory == 0) {
-        this.formData = {
-          operation: true,
-          number: null
-        };
-      } else {
-        this.formData = {
-          operation: false,
-          number: null
-        };
+    formatStatus(row) {
+      let status;
+      switch (row.status) {
+        case 0:
+          status = "待维修";
+          break;
+        case 1:
+          status = "待派单";
+          break;
+        case 2:
+          status = "维修中";
+          break;
+        case 3:
+          status = "正常";
+          break;
+        default:
+          status = "未知";
+          break;
       }
-      this.changeObject = name;
-      this.stockNumber = inventory;
+      return status;
     },
-    changeSubmit() {
+    filterAutomobile() {
+      let filtersName = this.filters.name.trim();
+      let filtersCategory = this.filters.category;
+      let filtersStatus = 2;
+
+      let filtersAutomobile = this.automobileInfs.filter(item => {
+        //标志位
+        var isFiltersName = true;
+        var isfiltersStatus = true;
+        var isFiltersCategory = true;
+        //判断
+        if (filtersName.length != 0) {
+          isFiltersName = item.name.indexOf(filtersName) != -1;
+        }
+        isfiltersStatus = item.status == filtersStatus;
+        if (filtersCategory.length != 0) {
+          isFiltersCategory = item.category == filtersCategory;
+        }
+        return isFiltersName && isfiltersStatus && isFiltersCategory;
+      });
+      this.filterAutomobileInfs = filtersAutomobile;
+    },
+    handleCurrentChange(currentPage) {
+      this.currentPage = currentPage;
+    },
+    //显示新增界面
+    handleAdd() {
+      this.formVisible = true;
+      this.addOrEdit = 0;
+      this.formData = {
+        name: "",
+        brand: "",
+        category: "",
+        engine: "",
+        gearbox: "",
+        drivingMode: 0,
+        energy: null,
+        seatNumber: 5,
+        yearStyle: "",
+        price: null,
+        status: 3
+      };
+    },
+    //显示编辑界面
+    handleEdit(index, row) {
+      this.formVisible = true;
+      this.addOrEdit = 1;
+      this.formData = Object.assign({}, row);
+      this.id = row.id;
+    },
+    handleDelete(index, row) {
+      this.$confirm("确认删除该记录吗?", "提示", {
+        cancelButtonClass: "btn-custom-cancel",
+        type: "warning"
+      })
+        .then(() => {
+          let automobileInfs = this.automobileInfs;
+          for (let index in automobileInfs) {
+            if (automobileInfs[index].id == row.id) {
+              automobileInfs.splice(index, 1);
+              break;
+            }
+          }
+          //更改缓存
+          localStorage.setItem('carInfo', JSON.stringify(this.automobileInfs))
+          this.filterAutomobile();
+          this.$message({
+            message: "删除成功",
+            type: "success"
+          });
+        })
+        .catch(() => {
+          // this.$message.error("删除失败");
+        });
+    },
+    addSubmit() {
       this.$refs.formData.validate(valid => {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {
             cancelButtonClass: "btn-custom-cancel"
           })
             .then(() => {
-              let changedInventory = 0;
-              if (this.formData.operation) {
-                changedInventory = this.stockNumber + this.formData.number;
-              } else {
-                changedInventory = this.stockNumber - this.formData.number;
-              }
-              let automobileStock = this.automobileStock;
-              for (let index in automobileStock) {
-                if (automobileStock[index].name == this.changeObject) {
-                  automobileStock[index].inventory = changedInventory;
-                  break;
-                }
-              }
-              this.filterStock();
+              this.formData.id = this.getGuid();
+              let newData = Object.assign({}, this.formData);
+              this.automobileInfs.push(newData);
+              // 存入缓存
+              let storage = JSON.parse(localStorage.getItem('carInfo')) || [];
+              storage.push(this.formData);
+              localStorage.setItem('carInfo', JSON.stringify(storage));
+              //校验
+              this.filterAutomobile();
               this.$message({
-                message: "变更成功",
+                message: "添加成功",
                 type: "success"
               });
               this.$refs["formData"].resetFields();
-              this.changeObject = "";
-              this.stockNumber = 0;
               this.formVisible = false;
             })
             .catch(() => {
-              // this.$message.error("变更失败");
+              // this.$message.error("添加失败");
+            });
+        }
+      });
+    },
+    editSubmit() {
+      this.$refs.formData.validate(valid => {
+        if (valid) {
+          this.$confirm("确认提交吗？", "提示", {
+            cancelButtonClass: "btn-custom-cancel"
+          })
+            .then(() => {
+              let automobileInfs = this.automobileInfs;
+              let newData = Object.assign({}, this.formData);
+              newData.status = 1
+              for (let index in automobileInfs) {
+                if (automobileInfs[index].id == this.id) {
+                  automobileInfs.splice(index, 1, newData);
+                  break;
+                }
+              }
+              //存入缓存
+              localStorage.setItem('carInfo', JSON.stringify(automobileInfs))
+              //校验
+              this.filterAutomobile();
+              this.$message({
+                message: "修改成功",
+                type: "success"
+              });
+              this.$refs["formData"].resetFields();
+              this.id = "";
+              this.formVisible = false;
+            })
+            .catch(() => {
+              // this.$message.error("修改失败");
             });
         }
       });
     },
     closeDialog() {
-      this.changeObject = "";
-      this.stockNumber = 0;
+      this.id = "";
       this.$refs["formData"].resetFields();
     },
     handleClose() {
-      this.changeObject = "";
-      this.stockNumber = 0;
+      this.id = "";
       this.formVisible = false;
       this.$refs["formData"].resetFields();
+    },
+    getGuid() {
+      function S4() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+      }
+      return (
+        S4() +
+        S4() +
+        "-" +
+        S4() +
+        "-" +
+        S4() +
+        "-" +
+        S4() +
+        "-" +
+        S4() +
+        S4() +
+        S4()
+      );
+    },
+    formatName(row) {
+      return row.name.trim();
+    },
+    formatCategory(row) {
+      let categoryName;
+      switch (row.category) {
+        case "small":
+          categoryName = "小巴";
+          break;
+        case "middle":
+          categoryName = "中巴";
+          break;
+        case "big":
+          categoryName = "大巴";
+          break;
+        case "double":
+          categoryName = "双层巴";
+          break;
+        default:
+          categoryName = "未知";
+          break;
+      }
+      return categoryName;
+    },
+    formatYearStyle(row) {
+      return row.yearStyle.length == 0
+        ? "未知"
+        : row.yearStyle.trim().length == 0
+          ? "未知"
+          : row.yearStyle.trim();
+    },
+    formatPrice(row) {
+      return row.price == null ? "未知" : row.price.toString() + "万";
     }
   }
 };
 </script>
 
-<style>
-.all-tabs {
-  padding: 10px 0;
+<style scoped>
+.small-input {
+  width: 60px;
 }
-.col-padding-first {
-  padding: 0 5px;
+
+.middle-input {
+  width: 100px;
 }
-.col-padding-rest {
-  padding: 15px 5px 0;
+
+.normal-input {
+  width: 180px;
 }
-.tab-normal {
-  overflow: auto;
-  height: 100%;
+
+.small-select {
+  width: 80px;
 }
-.tab-small {
-  height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: Center;
+
+.middle-select {
+  width: 120px;
 }
-.card-content {
-  text-align: center;
-  padding: 5px 0 10px;
+
+.normal-select {
+  width: 200px;
 }
-.name-small {
-  font-size: 16px;
+
+.col-position {
+  position: relative;
+  right: 5px;
 }
-.name-mini {
-  font-size: 12px;
-}
-.stock-small {
-  font-size: 12px;
-}
-.stock-mini {
-  font-size: 10px;
-}
-.button-padding-top {
-  padding-top: 5px;
-}
-.brand-dialog-min-width {
-  min-width: 350px;
+
+.dialog-minwidth {
+  min-width: 560px;
 }
 </style>

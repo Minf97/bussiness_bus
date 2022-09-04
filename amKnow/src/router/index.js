@@ -19,7 +19,7 @@ export default new Router({
       path: '/',
       redirect:'/login',
       name: 'Home',
-      component:  resolve => require(['@/components/common/Home'], resolve),
+      component: () => import(/* webpackChunkName: "index" */ '../components/common/Home'),
       children: [
         {
           path: 'automobileInfMng',
@@ -64,7 +64,7 @@ export default new Router({
         {
           path: 'Spare_parts_management',
           name: 'SparePartsManagement',
-          component:  resolve => require(['@/components/page/SparePartsManagement'], resolve),
+          component: () => import(/* webpackChunkName: "index" */ '../components/page/SparePartsManagement'),
           meta: {
             keepAlive: true // 需要缓存
           }

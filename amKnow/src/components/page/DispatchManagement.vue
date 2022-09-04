@@ -1,29 +1,36 @@
 <template>
   <div>
-    <el-col :span="24" class="toolbar" style="padding-bottom: 0px">
+    <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
       <el-form :inline="true" :model="filters" ref="searchConditions">
         <el-form-item>
           <el-input
             v-model="filters.name"
-            :placeholder="getShow == 3 ? '名称' : '零件名称'"
-            :class="
-              getShow == 1
-                ? 'normal-input'
-                : getShow == 2
-                ? 'middle-input'
-                : 'small-input'
-            "
+            :placeholder="getShow == 3?'名称':'汽车名称'"
+            :class="getShow == 1?'normal-input':(getShow == 2?'middle-input':'small-input')"
           ></el-input>
         </el-form-item>
-
+        <el-form-item>
+          <el-select
+            v-model="filters.status"
+            placeholder="状态"
+            :class="getShow == 1?'normal-select':(getShow == 2?'middle-select':'small-select')"
+          >
+            <el-option value>请选择</el-option>
+            <el-option
+              v-for="item in statusArr"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            ></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
             icon="el-icon-search"
             v-show="getShow == 1"
             @click="searchBrand"
-            >查询</el-button
-          >
+          >查询</el-button>
           <el-button
             type="primary"
             icon="el-icon-search"
@@ -33,64 +40,32 @@
             @click="searchBrand"
           ></el-button>
         </el-form-item>
-        <el-form-item class="add-button">
-          <el-button
-            type="success"
-            icon="el-icon-plus"
-            v-show="getShow == 1"
-            @click="handleAdd"
-            >新增</el-button
-          >
-          <el-button
-            type="success"
-            icon="el-icon-plus"
-            title="新增"
-            v-show="getShow != 1"
-            circle
-            @click="handleAdd"
-          ></el-button>
-        </el-form-item>
       </el-form>
     </el-col>
     <el-table
       :data="showTable"
-      :header-cell-style="{ background: '#eef1f6', color: '#606266' }"
+      :header-cell-style="{background:'#eef1f6',color:'#606266'}"
       highlight-current-row
       height="400"
-      style="border: 1px solid #dfe6ec"
+      style="border:1px solid #dfe6ec;"
       v-loading="loading"
     >
       <!-- <el-table-column type="selection" width="48" align="center"></el-table-column> -->
+      <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
+      <el-table-column prop="name" label="汽车名称" width="140" align="center" :formatter="formatName"></el-table-column>
       <el-table-column
-        type="index"
-        label="序号"
-        width="60"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="name"
-        label="零件名称"
+        prop="category"
+        label="类别"
         width="140"
         align="center"
-        :formatter="formatName"
-      ></el-table-column>
-      <el-table-column
-        prop="damage"
-        label="消耗情况"
-        width="140"
-        align="center"
-      ></el-table-column>
-      <el-table-column
-        prop="record"
-        label="情况记录"
-        width="200"
-        align="center"
+        :formatter="formatCategory"
       ></el-table-column>
       <el-table-column
         prop="status"
-        label="派单状态"
+        label="状态"
         width="200"
         align="center"
+        :formatter="formatStatus"
       ></el-table-column>
       <el-table-column
         prop="time"
@@ -99,31 +74,24 @@
         align="center"
         :formatter="formatTime"
       ></el-table-column>
-      <el-table-column
-        label="操作"
-        min-width="200"
-        align="center"
-        fixed="right"
-      >
+      <el-table-column label="操作" min-width="200" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button
             size="small"
             icon="el-icon-edit"
             @click="handleEdit(scope.$index, scope.row)"
-            >编辑</el-button
-          >
+          >编辑</el-button>
           <el-button
             type="danger"
             icon="el-icon-delete"
             size="small"
             @click="handleDelete(scope.$index, scope.row)"
-            >删除</el-button
-          >
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
     <!--工具条-->
-    <el-col :span="24" class="toolbar" style="text-align: center">
+    <el-col :span="24" class="toolbar" style="text-align:center">
       <!-- <el-button
         type="danger"
         icon="el-icon-delete"
@@ -158,61 +126,24 @@
       custom-class="brand-dialog-min-width"
       width="32%"
     >
-      <el-form
-        :model="formData"
-        label-width="80px"
-        :rules="formRules"
-        ref="formData"
-      >
-        <el-form-item label="零件名称" prop="name" class="row-padding-bottom">
+      <el-form :model="formData" label-width="80px" :rules="formRules" ref="formData">
+        <el-form-item label="汽车名称" prop="name" class="row-padding-bottom">
           <el-input v-model="formData.name" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="消耗情况" class="row-padding-bottom">
-          <el-input v-model="formData.damage" autocomplete="off"></el-input>
-
-          <!-- <el-select v-model="formData.country" style="width:100%">
+        <el-form-item label="状态" class="row-padding-bottom">
+          <el-select v-model="formData.status" style="width:100%">
             <el-option
-              v-for="item in countries"
+              v-for="item in statusArr"
               :key="item.value"
               :label="item.label"
               :value="item.value"
             ></el-option>
-          </el-select> -->
-        </el-form-item>
-        <el-form-item label="情况记录" class="row-padding-bottom">
-          <el-input v-model="formData.record"></el-input>
-        </el-form-item>
-        <el-form-item label="派单状态" class="row-padding-bottom">
-          <el-select v-model="formData.status" placeholder="请选择派送状态">
-            <el-option label="未发货" value="未发货"></el-option>
-            <el-option label="已派送" value="已派送"></el-option>
-            <el-option label="派送中" value="派送中"></el-option>
           </el-select>
-        </el-form-item>
-
-        <el-form-item label="时间">
-          <el-date-picker
-            v-model="formData.time"
-            format="yyyy年M月"
-            value-format="yyyy年M月"
-            :default-value="new Date(1935, 0)"
-            type="month"
-          ></el-date-picker>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button
-          type="primary"
-          v-show="addOrEdit == 0"
-          @click.native="addSubmit"
-          >提交</el-button
-        >
-        <el-button
-          type="primary"
-          v-show="addOrEdit == 1"
-          @click.native="editSubmit"
-          >提交</el-button
-        >
+        <el-button type="primary" v-show="addOrEdit == 0" @click.native="addSubmit">提交</el-button>
+        <el-button type="primary" v-show="addOrEdit == 1" @click.native="editSubmit">提交</el-button>
         <el-button @click.native="handleClose">取消</el-button>
       </div>
     </el-dialog>
@@ -222,7 +153,7 @@
 import store from "@/vuex/store";
 import axios from "axios";
 export default {
-  name: "DispatchManagement",
+  name: "AutomobileBrandMng",
   store,
   data() {
     return {
@@ -231,11 +162,28 @@ export default {
       currentPage: 1,
       id: "", //原数据id
       // sels: [],
-     filters: {
+      filters: {
         name: "",
-        country: ""
+        status: ""
       },
-
+      statusArr: [
+        {
+          label: "待维修",
+          value: 0
+        },
+        {
+          label: "待派单",
+          value: 1
+        },
+        {
+          label: "维修中",
+          value: 2
+        },
+        {
+          label: "正常",
+          value: 3
+        }
+      ],
       filterBrandInfs: [],
       formVisible: false, //新增编辑界面是否显示
       formData: {}, //新增编辑界面数据
@@ -246,20 +194,20 @@ export default {
           {
             required: true,
             pattern: /^[\s\S]*.*[^\s][\s\S]*$/,
-            message: "请输入零件名称",
-            trigger: "blur",
-          },
-        ],
-      },
+            message: "请输入品牌名称",
+            trigger: "blur"
+          }
+        ]
+      }
     };
   },
   mounted() {
     this.loading = true;
-    let that = this;
-    this.filterBrandInfs = JSON.parse(window.localStorage.getItem("dispatch"));
-    that.loading = false;
-    // this.loading = true;
-    // let that = this;
+    setTimeout(() => {
+      this.brandInfs = JSON.parse(localStorage.getItem('carInfo')) || [];
+      this.filterBrand();
+      this.loading = false;
+    }, 500)
     // axios
     //   .get(
     //     "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/brand"
@@ -282,38 +230,48 @@ export default {
       return this.$store.state.isShow;
     },
     showTable() {
-      return this.filterBrandInfs.slice(
-        (this.currentPage - 1) * this.pagesize,
-        this.currentPage * this.pagesize
-      );
-    },
+      return this.filterBrandInfs.slice((this.currentPage - 1) * this.pagesize,this.currentPage * this.pagesize);
+    }
   },
   methods: {
-    getStroage() {
-      return JSON.parse(window.localStorage.getItem("dispatch"));
+    formatCategory(row) {
+      let categoryName;
+      switch (row.category) {
+        case "small":
+          categoryName = "小巴";
+          break;
+        case "middle":
+          categoryName = "中巴";
+          break;
+        case "big":
+          categoryName = "大巴";
+          break;
+        case "double":
+          categoryName = "双层巴";
+          break;
+        default:
+          categoryName = "未知";
+          break;
+      }
+      return categoryName;
     },
-    process(data) {
-      console.log(data);
-      window.localStorage.setItem("dispatch", JSON.stringify(data));
-    },
-    searchBrand() {
+    searchBrand(){
       this.currentPage = 1;
       this.filterBrand();
     },
     filterBrand() {
       let filtersName = this.filters.name.trim();
-      let filtersCountry = this.filters.country;
-      this.brandInfs = this.getStroage();
-      let filtersBrand = this.brandInfs.filter((item) => {
+
+      let filtersBrand = this.brandInfs.filter(item => {
         var isFiltersName = true;
-        var isFiltersCountry = true;
+        var isFiltersStatus = false;
         if (filtersName.length != 0) {
-          isFiltersName = item.name.indexOf(filtersName) != -1;
+          isFiltersName = (item.name.indexOf(filtersName) != -1);
         }
-        if (filtersCountry.length != 0) {
-          isFiltersCountry = item.country == filtersCountry;
+        if(item.status == 2 || item.status == 3) {
+          isFiltersStatus = true
         }
-        return isFiltersName && isFiltersCountry;
+        return isFiltersName && isFiltersStatus ;
       });
       this.filterBrandInfs = filtersBrand;
     },
@@ -326,13 +284,11 @@ export default {
       this.addOrEdit = 0;
       this.formData = {
         name: "",
-        damage: "",
+        category: "",
         status: "",
-        time: "",
-        record: "",
+        time: ""
       };
     },
-
     //显示编辑界面
     handleEdit(index, row) {
       this.formVisible = true;
@@ -343,21 +299,21 @@ export default {
     handleDelete(index, row) {
       this.$confirm("确认删除该记录吗?", "提示", {
         cancelButtonClass: "btn-custom-cancel",
-        type: "warning",
+        type: "warning"
       })
         .then(() => {
-          let brandInfs = this.getStroage();
+          let brandInfs = this.brandInfs;
           for (let index in brandInfs) {
             if (brandInfs[index].id == row.id) {
               brandInfs.splice(index, 1);
               break;
             }
           }
-          this.process(brandInfs);
           this.filterBrand();
+          localStorage.setItem('carInfo', JSON.stringify(brandInfs));
           this.$message({
             message: "删除成功",
-            type: "success",
+            type: "success"
           });
         })
         .catch(() => {
@@ -365,25 +321,21 @@ export default {
         });
     },
     addSubmit() {
-      this.$refs.formData.validate((valid) => {
+      this.$refs.formData.validate(valid => {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {
-            cancelButtonClass: "btn-custom-cancel",
+            cancelButtonClass: "btn-custom-cancel"
           })
-            .then((res) => {
+            .then(() => {
               this.formData.id = this.getGuid();
               let newData = Object.assign({}, this.formData);
-              const old_arr = this.getStroage();
-              old_arr.push(newData);
-              this.process(old_arr);
               this.brandInfs.push(newData);
+              //存缓存
+              localStorage.setItem('carInfo', JSON.stringify(this.brandInfs));
               this.filterBrand();
-              console.log(this.brandInfs);
-              // this.process(this.filterBrandInfs)
-
               this.$message({
                 message: "添加成功",
-                type: "success",
+                type: "success"
               });
               this.$refs["formData"].resetFields();
               this.formVisible = false;
@@ -395,13 +347,13 @@ export default {
       });
     },
     editSubmit() {
-      this.$refs.formData.validate((valid) => {
+      this.$refs.formData.validate(valid => {
         if (valid) {
           this.$confirm("确认提交吗？", "提示", {
-            cancelButtonClass: "btn-custom-cancel",
+            cancelButtonClass: "btn-custom-cancel"
           })
             .then(() => {
-              let brandInfs = this.getStroage();
+              let brandInfs = this.brandInfs;
               let newData = Object.assign({}, this.formData);
               for (let index in brandInfs) {
                 if (brandInfs[index].id == this.id) {
@@ -409,11 +361,11 @@ export default {
                   break;
                 }
               }
-              this.process(brandInfs);
+              localStorage.setItem('carInfo', JSON.stringify(brandInfs));
               this.filterBrand();
               this.$message({
                 message: "修改成功",
-                type: "success",
+                type: "success"
               });
               this.$refs["formData"].resetFields();
               this.id = "";
@@ -438,20 +390,7 @@ export default {
       function S4() {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
       }
-      return (
-        S4() +
-        S4() +
-        "-" +
-        S4() +
-        "-" +
-        S4() +
-        "-" +
-        S4() +
-        "-" +
-        S4() +
-        S4() +
-        S4()
-      );
+      return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
     },
     // selsChange(sels) {
     //   this.sels = sels;
@@ -459,29 +398,35 @@ export default {
     formatName(row) {
       return row.name.trim();
     },
-
-    formatCompany(row) {
-      return row.company.length == 0
-        ? "未知"
-        : row.company.trim().length == 0
-        ? "未知"
-        : row.company.trim();
-    },
-    formatFounder(row) {
-      return row.founder.length == 0
-        ? "未知"
-        : row.founder.trim().length == 0
-        ? "未知"
-        : row.founder.trim();
+    formatStatus(row) {
+      let status;
+      switch (row.status) {
+        case 0:
+          status = "待维修";
+          break;
+        case 1:
+          status = "待派单";
+          break;
+        case 2:
+          status = "维修中";
+          break;
+        case 3:
+          status = "正常";
+          break;
+        default:
+          status = "未知";
+          break;
+      }
+      return status;
     },
     formatTime(row) {
       return row.time.length == 0
         ? "未知"
         : row.time.trim().length == 0
-        ? "未知"
-        : row.time.trim();
-    },
-  },
+          ? "未知"
+          : row.time.trim();
+    }
+  }
 };
 </script>
 <style scoped>
@@ -507,6 +452,3 @@ export default {
   min-width: 350px;
 }
 </style>
-
-
-
