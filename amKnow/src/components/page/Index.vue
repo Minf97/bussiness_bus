@@ -1,46 +1,11 @@
 <template>
   <div>
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-      <el-form :inline="true" :model="filters" ref="searchConditions">
-        <el-form-item>
-          <el-input
-            v-model="filters.name"
-            :placeholder="getShow == 3?'名称':'汽车名称'"
-            :class="getShow == 1?'normal-input':(getShow == 2?'middle-input':'small-input')"
-          ></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-select
-            v-model="filters.status"
-            placeholder="状态"
-            :class="getShow == 1?'normal-select':(getShow == 2?'middle-select':'small-select')"
-          >
-            <el-option value>请选择</el-option>
-            <el-option
-              v-for="item in statusArr"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            v-show="getShow == 1"
-            @click="searchBrand"
-          >查询</el-button>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            title="查询"
-            v-show="getShow != 1"
-            circle
-            @click="searchBrand"
-          ></el-button>
-        </el-form-item>
-      </el-form>
+      <el-button type="primary" icon="el-icon-upload2">上传文件</el-button>
+      <el-button type="primary" icon="el-icon-delete">批量删除</el-button>
+      <el-button type="primary" icon="el-icon-folder-add">新建文件夹</el-button>
+      <el-button type="primary" icon="el-icon-refresh">重命名</el-button>
+      <el-button type="primary" icon="el-icon-right">移动到</el-button>
     </el-col>
     <el-table
       :data="showTable"
@@ -49,23 +14,35 @@
       height="400"
       style="border:1px solid #dfe6ec;"
       v-loading="loading"
+      :border="true"
     >
-      <!-- <el-table-column type="selection" width="48" align="center"></el-table-column> -->
+      <el-table-column type="selection" width="48" align="center"></el-table-column>
       <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
-      <el-table-column prop="name" label="汽车名称" width="140" align="center" :formatter="formatName"></el-table-column>
+      <el-table-column prop="filename" label="文件名称" width="140" align="center" :formatter="formatName"></el-table-column>
       <el-table-column
-        prop="category"
-        label="类别"
+        prop="size"
+        label="文件大小"
         width="140"
         align="center"
-        :formatter="formatCategory"
       ></el-table-column>
       <el-table-column
-        prop="status"
-        label="状态"
+        prop="path"
+        label="文件路径"
         width="200"
         align="center"
-        :formatter="formatStatus"
+      ></el-table-column>
+      <el-table-column
+        prop="user"
+        label="上传用户"
+        width="200"
+        align="center"
+      ></el-table-column>
+      <el-table-column
+        prop="time"
+        label="上传时间"
+        width="200"
+        align="center"
+        :formatter="formatTime"
       ></el-table-column>
 
       <el-table-column label="操作" min-width="200" align="center" fixed="right">
@@ -74,35 +51,18 @@
             size="small"
             icon="el-icon-edit"
             @click="handleEdit(scope.$index, scope.row)"
-          >编辑</el-button>
+          >收藏</el-button>
           <el-button
             type="danger"
             icon="el-icon-delete"
             size="small"
             @click="handleDelete(scope.$index, scope.row)"
-          >删除</el-button>
+          >分享</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!--工具条-->
+    <!-- 工具条 -->
     <el-col :span="24" class="toolbar" style="text-align:center">
-      <!-- <el-button
-        type="danger"
-        icon="el-icon-delete"
-        @click="batchRemove"
-        v-show="getShow == 1"
-        :disabled="this.sels.length===0"
-        style="float:left"
-      >批量删除</el-button>
-      <el-button
-        type="danger"
-        icon="el-icon-delete"
-        title="批量删除"
-        @click="batchRemove"
-        v-show="getShow != 1"
-        :disabled="this.sels.length===0"
-        style="float:left"
-      ></el-button>-->
       <el-pagination
         @current-change="handleCurrentChange"
         layout="total, prev, pager, next"
@@ -110,37 +70,39 @@
         :total="this.filterBrandInfs.length"
       ></el-pagination>
     </el-col>
+    <!-- 工具条end -->
 
     <!--新增编辑界面-->
-    <el-dialog
-      :title="addOrEdit == 0 ? '新增' : '编辑'"
-      :visible.sync="formVisible"
-      :close-on-click-modal="false"
-      @close="closeDialog"
-      custom-class="brand-dialog-min-width"
-      width="32%"
-    >
-      <el-form :model="formData" label-width="80px" :rules="formRules" ref="formData">
-        <el-form-item label="汽车名称" prop="name" class="row-padding-bottom">
-          <el-input v-model="formData.name" autocomplete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="状态" class="row-padding-bottom">
-          <el-select v-model="formData.status" style="width:100%">
-            <el-option
-              v-for="item in statusArr"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button type="primary" v-show="addOrEdit == 0" @click.native="addSubmit">提交</el-button>
-        <el-button type="primary" v-show="addOrEdit == 1" @click.native="editSubmit">提交</el-button>
-        <el-button @click.native="handleClose">取消</el-button>
-      </div>
-    </el-dialog>
+<!--    <el-dialog-->
+<!--      :title="addOrEdit == 0 ? '新增' : '编辑'"-->
+<!--      :visible.sync="formVisible"-->
+<!--      :close-on-click-modal="false"-->
+<!--      @close="closeDialog"-->
+<!--      custom-class="brand-dialog-min-width"-->
+<!--      width="32%"-->
+<!--    >-->
+<!--      <el-form :model="formData" label-width="80px" :rules="formRules" ref="formData">-->
+<!--        <el-form-item label="汽车名称" prop="name" class="row-padding-bottom">-->
+<!--          <el-input v-model="formData.name" autocomplete="off"></el-input>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="状态" class="row-padding-bottom">-->
+<!--          <el-select v-model="formData.status" style="width:100%">-->
+<!--            <el-option-->
+<!--              v-for="item in statusArr"-->
+<!--              :key="item.value"-->
+<!--              :label="item.label"-->
+<!--              :value="item.value"-->
+<!--            ></el-option>-->
+<!--          </el-select>-->
+<!--        </el-form-item>-->
+<!--      </el-form>-->
+<!--      <div slot="footer" class="dialog-footer">-->
+<!--        <el-button type="primary" v-show="addOrEdit == 0" @click.native="addSubmit">提交</el-button>-->
+<!--        <el-button type="primary" v-show="addOrEdit == 1" @click.native="editSubmit">提交</el-button>-->
+<!--        <el-button @click.native="handleClose">取消</el-button>-->
+<!--      </div>-->
+<!--    </el-dialog>-->
+    <!--新增编辑界面end-->
   </div>
 </template>
 <script>
@@ -160,25 +122,15 @@ export default {
         name: "",
         status: ""
       },
-      statusArr: [
+      filterBrandInfs: [
         {
-          label: "待维修",
-          value: 0
-        },
-        {
-          label: "待派单",
-          value: 1
-        },
-        {
-          label: "维修中",
-          value: 2
-        },
-        {
-          label: "正常",
-          value: 3
+          filename: '测试文件名称',
+          size: 1024,
+          path: '测试路径',
+          user: '测试用户',
+          time: new Date().getTime()
         }
       ],
-      filterBrandInfs: [],
       formVisible: false, //新增编辑界面是否显示
       formData: {}, //新增编辑界面数据
       addOrEdit: 0, //add——0  edit——1
@@ -198,10 +150,11 @@ export default {
   mounted() {
     this.loading = true;
     setTimeout(() => {
-      this.brandInfs = JSON.parse(localStorage.getItem('carInfo')) || [];
-      this.filterBrand();
+      // this.brandInfs = JSON.parse(localStorage.getItem('carInfo')) || [];
+      // this.filterBrand();
       this.loading = false;
     }, 500)
+    console.log(this.filterBrandInfs)
     // axios
     //   .get(
     //     "https://www.easy-mock.com/mock/5c702a27d3044d1448586d67/amKnow/brand"
@@ -228,31 +181,12 @@ export default {
     }
   },
   methods: {
-    formatCategory(row) {
-      let categoryName;
-      switch (row.category) {
-        case "small":
-          categoryName = "小巴";
-          break;
-        case "middle":
-          categoryName = "中巴";
-          break;
-        case "big":
-          categoryName = "大巴";
-          break;
-        case "double":
-          categoryName = "双层巴";
-          break;
-        default:
-          categoryName = "未知";
-          break;
-      }
-      return categoryName;
-    },
+    //搜索函数 - 暂时删除
     searchBrand(){
       this.currentPage = 1;
       this.filterBrand();
     },
+    //过滤函数 - 暂时删除
     filterBrand() {
       let filtersName = this.filters.name.trim();
       let filtersStatus = this.filters.status;
@@ -270,6 +204,7 @@ export default {
       });
       this.filterBrandInfs = filtersBrand;
     },
+    //控制编辑框显隐
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
     },
@@ -390,40 +325,26 @@ export default {
       }
       return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
     },
-    // selsChange(sels) {
-    //   this.sels = sels;
-    // },
+    //格式化文件名称
     formatName(row) {
-      return row.name.trim();
+      return row.filename.trim();
     },
-    formatStatus(row) {
-      let status;
-      switch (row.status) {
-        case 0:
-          status = "待维修";
-          break;
-        case 1:
-          status = "待派单";
-          break;
-        case 2:
-          status = "维修中";
-          break;
-        case 3:
-          status = "正常";
-          break;
-        default:
-          status = "未知";
-          break;
-      }
-      return status;
-    },
+    //格式化时间
     formatTime(row) {
-      return row.time.length == 0
-        ? "未知"
-        : row.time.trim().length == 0
-        ? "未知"
-        : row.time.trim();
-    }
+      let time = new Date(row.time);
+      let year = time.getFullYear(),
+          month = time.getMonth() + 1,
+          date = time.getDate(),
+          hh = time.getHours(),
+          mm = time.getMinutes(),
+          ss = time.getSeconds();
+
+      const formateStr = n => {
+        n = n.toString()
+        return n[1] ? n : `0${n}`
+      }
+      return [year, month, date].map(formateStr).join("-") + " " + [hh, mm, ss].map(formateStr).join(":");
+    },
   }
 };
 </script>

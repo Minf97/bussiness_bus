@@ -1,14 +1,32 @@
 <template>
   <div :class="getCollapse?'collapsed-main':'main'">
-    <el-col :span="24">
-      <el-breadcrumb class="breadcrumb-inner">
-        <el-breadcrumb-item
-          v-if="hasParent"
-          :class="hasChild?'normal-font':'bold-font'"
-        >{{ parentName }}</el-breadcrumb-item>
-        <el-breadcrumb-item v-if="hasChild" class="bold-font">{{ childName }}</el-breadcrumb-item>
-      </el-breadcrumb>
-    </el-col>
+    <el-row style="margin: 10px 0">
+      <el-col :span="21">
+        <el-breadcrumb class="breadcrumb-inner">
+          <el-breadcrumb-item
+            v-if="hasParent"
+            :class="hasChild?'normal-font':'bold-font'"
+          >{{ parentName }}</el-breadcrumb-item>
+          <el-breadcrumb-item v-if="hasChild" class="bold-font">{{ childName }}</el-breadcrumb-item>
+        </el-breadcrumb>
+      </el-col>
+      <el-col :span="3">
+        <div class="rightText">
+          <span class="highLight">{{ title }}</span>
+          <span> / </span>
+          <span>{{ parentName }}</span>
+        </div>
+
+        <el-breadcrumb class="breadcrumb-inner">
+          <el-breadcrumb-item
+            v-if="hasParent"
+            :class="hasChild?'normal-font':'bold-font'"
+          ></el-breadcrumb-item>
+          <el-breadcrumb-item v-if="hasChild" class="bold-font">{{ parentName }}</el-breadcrumb-item>
+        </el-breadcrumb>
+      </el-col>
+    </el-row>
+
     <el-col :span="24" class="content-wrapper">
       <transition name="fade" mode="out-in">
         <keep-alive>
@@ -32,6 +50,7 @@ export default {
   },
   data() {
     return {
+      title: "ISS-Cloud-Disk",
       parentName: "",
       childName: "",
       hasParent: true,
@@ -76,10 +95,15 @@ export default {
 .main {
   width: calc(100% - 260px);
   padding: 15px;
+  background-color: #ecf0f1;
+  /*transition: all 0.5s ease;*/
 }
 .collapsed-main {
   width: calc(100% - 90px);
   padding: 15px;
+  background-color: #ecf0f1;
+  /*transition: all 0.5s ease;*/
+
 }
 .breadcrumb-inner {
   float: left;
@@ -94,6 +118,8 @@ export default {
 .content-wrapper {
   background-color: #fff;
   box-sizing: border-box;
+  border-radius: 5px;
+  box-shadow: 2px 2px 10px 2px #d5d5d5;
 }
 
 /* 子组件共用css 定义在父组件中 若定义在其中一个子组件中可能导致在其他组件重新加载无效  */
@@ -102,7 +128,7 @@ export default {
   padding-right: 10px;
 }
 .toolbar {
-  background-color: #f4f4f4;
+  background-color: #fff;
   padding: 10px;
   margin: 10px 0px;
 }
@@ -114,5 +140,12 @@ export default {
 }
 .row-padding-bottom {
   padding-bottom: 10px;
+}
+.rightText {
+  color: #999999;
+  font-size: 15px;
+}
+.highLight {
+  color: #4e93c5;
 }
 </style>

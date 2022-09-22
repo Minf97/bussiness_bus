@@ -55,26 +55,55 @@
       <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
       <el-table-column prop="name" label="汽车名称" width="92" align="center" :formatter="formatName"></el-table-column>
       <el-table-column
-        prop="category"
-        label="类别"
-        width="120"
-        align="center"
-        :formatter="formatCategory"
-      ></el-table-column>
-      <el-table-column
         prop="status"
         label="状态"
         width="120"
         align="center"
         :formatter="formatStatus"
       ></el-table-column>
+      <el-table-column
+        prop="badArea"
+        label="损坏位置"
+        width="120"
+        align="center"
+        :formatter="formatBadArea"
+      ></el-table-column>
+      <el-table-column
+        prop="badArea"
+        label="需要零件"
+        width="120"
+        align="center"
+        :formatter="lingjian"
+      ></el-table-column>
+      <el-table-column
+        prop="badArea"
+        label="零件数量"
+        width="120"
+        align="center"
+        :formatter="lingjianAmount"
+      ></el-table-column>
+      <el-table-column
+        prop="time"
+        label="维修时间"
+        width="120"
+        align="center"
+        :formatter="formatTime"
+      ></el-table-column>
       <el-table-column label="操作" min-width="200" align="center" fixed="right">
         <template slot-scope="scope">
           <el-button
+            v-if="scope.row.status == 0"
             size="small"
             icon="el-icon-edit"
             @click="handleEdit(scope.$index, scope.row)"
-          >检修
+          >登记
+          </el-button>
+          <el-button
+            v-if="scope.row.status == 1"
+            size="small"
+            icon="el-icon-edit"
+            @click="weixiu(scope.$index, scope.row)"
+          >维修
           </el-button>
         </template>
       </el-table-column>
@@ -108,7 +137,7 @@
 
     <!--新增编辑界面-->
     <el-dialog
-      :title="addOrEdit == 0 ? '新增' : '检修'"
+      :title="addOrEdit == 0 ? '新增' : '编辑'"
       :visible.sync="formVisible"
       :close-on-click-modal="false"
       @close="closeDialog"
@@ -135,20 +164,10 @@
               </el-select>
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row>
           <el-col :span="12" class="col-position">
-            <el-form-item label="检修人">
-              <el-select v-model="formData.people" style="width:100%">
-                <el-option
-                  v-for="item in people"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" class="col-position">
-            <el-form-item label="故障区域">
+            <el-form-item label="损坏部位">
               <el-select v-model="formData.badArea" style="width:100%">
                 <el-option
                   v-for="item in badArea"
@@ -160,21 +179,36 @@
             </el-form-item>
           </el-col>
         </el-row>
+        <el-row>
+          <el-col :span="12" class="col-position">
+            <el-form-item label="维修师傅">
+              <el-select v-model="formData.people" style="width:100%">
+                <el-option
+                  v-for="item in people"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" v-show="addOrEdit == 0" @click.native="addSubmit">提交</el-button>
-        <el-button type="primary" v-show="addOrEdit == 1" @click.native="editSubmit">提交</el-button>
+        <el-button type="primary" v-show="addOrEdit == 1" @click.native="editSubmit">登记</el-button>
+        <!--        <el-button type="primary" v-show="addOrEdit == 1" @click.native="editSubmit">登记</el-button>-->
         <el-button @click.native="handleClose">取消</el-button>
       </div>
     </el-dialog>
   </div>
 </template>
+
 <script>
 import store from "@/vuex/store";
 import axios from "axios";
 
 export default {
-  name: "AutomobileInfMng",
+  name: "PlanManagement",
   store,
   data() {
     return {
@@ -188,34 +222,6 @@ export default {
         drivingMode: "",
         category: ""
       },
-      automobileCategorys: [
-        {
-          label: "小巴",
-          value: "small"
-        },
-        {
-          label: "中巴",
-          value: "middle"
-        },
-        {
-          label: "大巴",
-          value: "big"
-        },
-        {
-          label: "双层巴",
-          value: "double"
-        }
-      ],
-      automobileDrivingMode: [
-        {
-          label: "两驱",
-          value: 0
-        },
-        {
-          label: "四驱",
-          value: 1
-        }
-      ],
       people: [
         {
           label: "陈师傅",
@@ -242,6 +248,34 @@ export default {
         {
           label: "下侧",
           value: 2
+        }
+      ],
+      automobileCategorys: [
+        {
+          label: "小巴",
+          value: "small"
+        },
+        {
+          label: "中巴",
+          value: "middle"
+        },
+        {
+          label: "大巴",
+          value: "big"
+        },
+        {
+          label: "双层巴",
+          value: "double"
+        }
+      ],
+      automobileDrivingMode: [
+        {
+          label: "两驱",
+          value: 0
+        },
+        {
+          label: "四驱",
+          value: 1
         }
       ],
       filterAutomobileInfs: [],
@@ -287,6 +321,24 @@ export default {
           "id": "c3b477ca-e192-6763-7b56-e1be9c161375"
         }]
       ,
+      statusArr: [
+        {
+          label: "待维修",
+          value: 0
+        },
+        {
+          label: "待派单",
+          value: 1
+        },
+        {
+          label: "维修中",
+          value: 2
+        },
+        {
+          label: "正常",
+          value: 3
+        }
+      ],
       formRules: {
         name: [
           {
@@ -351,6 +403,76 @@ export default {
       this.currentPage = 1;
       this.filterAutomobile();
     },
+    lingjian(row) {
+    let badArea = row.badArea;
+    let zhishiku = JSON.parse(localStorage.getItem('Knowledge_base'));
+      switch (row.badArea) {
+        case 0:
+          badArea = "车头"
+          break
+        case 1:
+          badArea = "车身"
+          break
+        case 2:
+          badArea = "下侧"
+          break
+      }
+      let lingjian;
+      zhishiku.forEach(item => {
+        if(item.company == badArea) {
+          lingjian = item.name
+        }
+      })
+      return lingjian ? lingjian : "未知"
+    },
+    lingjianAmount(row) {
+      let badArea = row.badArea;
+      let zhishiku = JSON.parse(localStorage.getItem('Knowledge_base'));
+      switch (row.badArea) {
+        case 0:
+          badArea = "车头"
+          break
+        case 1:
+          badArea = "车身"
+          break
+        case 2:
+          badArea = "下侧"
+          break
+      }
+      let lingjianAmount;
+      zhishiku.forEach(item => {
+        if(item.company == badArea) {
+          lingjianAmount = item.amount
+        }
+      })
+      return lingjianAmount ? lingjianAmount : "未知"
+    },
+    formatTime(row) {
+
+      if(row.time) {
+        let time = row.time;
+        let year = time.getFullYear();
+        let month = time.getMonth() + 1;
+        let date = time.getDate();
+
+        return [year, month, date].map(this.formatNumber).join('/')
+      }
+      else {
+        return '未知'
+      }
+    },
+    formatBtn(row) {
+      let content;
+      switch (row.status) {
+        case 0:
+          content = "登记";
+          break;
+        case 1:
+          content = "维修";
+          break;
+      }
+      return content;
+    },
     formatStatus(row) {
       let status;
       switch (row.status) {
@@ -375,7 +497,6 @@ export default {
     filterAutomobile() {
       let filtersName = this.filters.name.trim();
       let filtersCategory = this.filters.category;
-      let filtersStatus = 2;
 
       let filtersAutomobile = this.automobileInfs.filter(item => {
         //标志位
@@ -386,7 +507,7 @@ export default {
         if (filtersName.length != 0) {
           isFiltersName = item.name.indexOf(filtersName) != -1;
         }
-        isfiltersStatus = item.status == filtersStatus;
+        isfiltersStatus = (item.status == 1 || item.status == 0);
         if (filtersCategory.length != 0) {
           isFiltersCategory = item.category == filtersCategory;
         }
@@ -396,6 +517,24 @@ export default {
     },
     handleCurrentChange(currentPage) {
       this.currentPage = currentPage;
+    },
+    formatBadArea(row) {
+      let badArea;
+      switch (row.badArea) {
+        case 0:
+          badArea = "车头"
+          break
+        case 1:
+          badArea = "车身"
+          break
+        case 2:
+          badArea = "下侧"
+          break
+        default :
+          badArea = "未知"
+          break
+      }
+      return badArea
     },
     //显示新增界面
     handleAdd() {
@@ -421,6 +560,98 @@ export default {
       this.addOrEdit = 1;
       this.formData = Object.assign({}, row);
       this.id = row.id;
+    },
+    weixiu(index, row) {
+      let badArea;
+      switch (row.badArea) {
+        case 0:
+          badArea = "车头"
+          break
+        case 1:
+          badArea = "车身"
+          break
+        case 2:
+          badArea = "下侧"
+          break
+      }
+      console.log(badArea);
+      this.$confirm('是否进行维修?此操作将改变状态为维修中', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let beijian = JSON.parse(localStorage.getItem('spm_data'));
+        let zhishiku = JSON.parse(localStorage.getItem('Knowledge_base'));
+        //所需备件名称
+        let needyBeijianName;
+        zhishiku.forEach(item => {
+          if(item.company == badArea) {
+            needyBeijianName = item.name;
+          }
+        })
+        //所需备件数量
+        let needyBeijianAmount;
+        zhishiku.forEach(item => {
+          if(item.company == badArea) {
+            needyBeijianAmount = item.amount;
+          }
+        })
+        //备件库中，所需备件的总数量
+        let needyBeijianAmount_total;
+        let beijianIndex
+        beijian.forEach((item, index) => {
+          if (item.name == needyBeijianName) {
+            needyBeijianAmount_total = item.total
+            beijianIndex = index
+          }
+        })
+        //进行修改
+        if (needyBeijianAmount_total >= needyBeijianAmount) {
+          beijian[beijianIndex].total -= needyBeijianAmount;
+          let carInfo = JSON.parse(localStorage.getItem('carInfo'));
+
+          row.status = 2;
+          row["time"] = this.handleTime(new Date());
+          carInfo.forEach(item => {
+            if(item.name == row.name) {
+              item.status = 2;
+              item.time = this.handleTime(new Date())
+            }
+          })
+          localStorage.setItem('spm_data', JSON.stringify(beijian));
+          localStorage.setItem('carInfo', JSON.stringify(carInfo));
+          this.$message({
+            type: 'success',
+            message: '状态变更成功!'
+          });
+        } else {
+          this.$message({
+            type: 'error',
+            message: '备件库零件不足！'
+          });
+        }
+        setTimeout(() => {
+          location.reload()
+        }, 800)
+
+      }).catch((err) => {
+        console.log(err)
+        this.$message({
+          type: 'info',
+          message: '已取消维修'
+        });
+      });
+    },
+    handleTime(time) {
+      let year = time.getFullYear();
+      let month = time.getMonth() + 1;
+      let date = time.getDate();
+
+      return [year, month, date].map(this.formatNumber).join('/')
+    },
+    formatNumber(n) {
+      n = n.toString()
+      return n[1] ? n : `0${n}`
     },
     handleDelete(index, row) {
       this.$confirm("确认删除该记录吗?", "提示", {
@@ -485,7 +716,7 @@ export default {
             .then(() => {
               let automobileInfs = this.automobileInfs;
               let newData = Object.assign({}, this.formData);
-              newData.status = 1
+              newData.status = 1;
               for (let index in automobileInfs) {
                 if (automobileInfs[index].id == this.id) {
                   automobileInfs.splice(index, 1, newData);
@@ -523,6 +754,7 @@ export default {
       function S4() {
         return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
       }
+
       return (
         S4() +
         S4() +

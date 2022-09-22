@@ -1,73 +1,9 @@
 <template>
   <div>
     <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-      <el-form :inline="true" :model="filters">
-        <el-form-item>
-          <el-input
-            v-model="filters.name"
-            :placeholder="getShow == 3?'名称':'汽车名称'"
-            :class="getShow == 1?'normal-input':(getShow == 2?'middle-input':'small-input')"
-          ></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-select
-            v-model="filters.drivingMode"
-            :placeholder="getShow == 3?'驱动':'驱动方式'"
-            :class="getShow == 1?'normal-select':(getShow == 2?'middle-select':'small-select')"
-          >
-            <el-option value>请选择</el-option>
-            <el-option
-              v-for="item in automobileDrivingMode"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-select
-            v-model="filters.category"
-            :placeholder="getShow == 3?'类别':'汽车类别'"
-            :class="getShow == 1?'normal-select':(getShow == 2?'middle-select':'small-select')"
-          >
-            <el-option value>请选择</el-option>
-            <el-option
-              v-for="item in automobileCategorys"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></el-option>
-          </el-select>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            v-show="getShow == 1"
-            @click="searchAutomobile"
-          >查询
-          </el-button>
-          <el-button
-            type="primary"
-            icon="el-icon-search"
-            title="查询"
-            v-show="getShow != 1"
-            circle
-            @click="searchAutomobile"
-          ></el-button>
-        </el-form-item>
-        <el-form-item class="add-button">
-          <el-button type="success" icon="el-icon-plus" v-show="getShow == 1" @click="handleAdd">新增</el-button>
-          <el-button
-            type="success"
-            icon="el-icon-plus"
-            title="新增"
-            v-show="getShow != 1"
-            circle
-            @click="handleAdd"
-          ></el-button>
-        </el-form-item>
-      </el-form>
+      <el-button type="primary" icon="el-icon-circle-plus-outline">新增用户</el-button>
+      <el-button type="primary" icon="el-icon-delete">删除用户</el-button>
+      <el-button type="primary" icon="el-icon-magic-stick">用户授权</el-button>
     </el-col>
     <el-table
       :data="showTable"
@@ -77,51 +13,36 @@
       style="border:1px solid #dfe6ec;"
       v-loading="loading"
     >
-      <!-- <el-table-column type="selection" width="48" align="center"></el-table-column> -->
+      <el-table-column type="selection" width="48" align="center"></el-table-column>
       <el-table-column type="index" label="序号" width="60" align="center"></el-table-column>
-      <el-table-column prop="name" label="汽车名称" width="92" align="center" :formatter="formatName"></el-table-column>
+      <el-table-column prop="name" label="姓名" width="92" align="center" :formatter="formatName"></el-table-column>
       <el-table-column
         prop="category"
-        label="类别"
-        width="92"
+        label="性别"
+        width="120"
         align="center"
         :formatter="formatCategory"
       ></el-table-column>
       <el-table-column
-        prop="engine"
-        label="发动机"
-        width="92"
-        align="center"
-        :formatter="formatEngine"
-      ></el-table-column>
-      <el-table-column
-        prop="gearbox"
-        label="变速箱"
+        prop="status"
+        label="手机"
         width="120"
         align="center"
-        :formatter="formatGearbox"
+        :formatter="formatStatus"
       ></el-table-column>
       <el-table-column
-        prop="drivingMode"
-        label="驱动方式"
-        width="92"
+        prop="status"
+        label="邮箱"
+        width="120"
         align="center"
-        :formatter="formatDrivingMode"
-      ></el-table-column>
-      <el-table-column prop="energy" label="能源" width="92" align="center" :formatter="formatEnergy"></el-table-column>
-      <el-table-column
-        prop="seatNumber"
-        label="座位数"
-        width="92"
-        align="center"
-        :formatter="formatSeatNumber"
+        :formatter="formatStatus"
       ></el-table-column>
       <el-table-column
-        prop="yearStyle"
-        label="年代款"
-        width="92"
+        prop="status"
+        label="用户角色"
+        width="120"
         align="center"
-        :formatter="formatYearStyle"
+        :formatter="formatStatus"
       ></el-table-column>
       <el-table-column label="操作" min-width="200" align="center" fixed="right">
         <template slot-scope="scope">
@@ -129,14 +50,7 @@
             size="small"
             icon="el-icon-edit"
             @click="handleEdit(scope.$index, scope.row)"
-          >编辑
-          </el-button>
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            size="small"
-            @click="handleDelete(scope.$index, scope.row)"
-          >删除
+          >查看
           </el-button>
         </template>
       </el-table-column>
@@ -170,7 +84,7 @@
 
     <!--新增编辑界面-->
     <el-dialog
-      :title="addOrEdit == 0 ? '新增' : '编辑'"
+      :title="addOrEdit == 0 ? '新增' : '检修'"
       :visible.sync="formVisible"
       :close-on-click-modal="false"
       @close="closeDialog"
@@ -197,48 +111,28 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="发动机">
-              <el-input v-model="formData.engine"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row class="row-padding-bottom">
           <el-col :span="12" class="col-position">
-            <el-form-item label="变速箱">
-              <el-input v-model="formData.gearbox"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="驱动方式">
-              <el-radio-group v-model="formData.drivingMode">
-                <el-radio class="radio" :label="0">两驱</el-radio>
-                <el-radio class="radio" :label="1">四驱</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row class="row-padding-bottom">
-          <el-col :span="12" class="col-position">
-            <el-form-item label="能源">
-              <el-select v-model="formData.energy" style="width:100%">
-                <el-option :label="'汽油'" :value="0"></el-option>
-                <el-option :label="'柴油'" :value="1"></el-option>
-                <el-option :label="'纯电动'" :value="2"></el-option>
-                <el-option :label="'油电混合'" :value="3"></el-option>
+            <el-form-item label="检修人">
+              <el-select v-model="formData.people" style="width:100%">
+                <el-option
+                  v-for="item in people"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
-            <el-form-item label="座位数">
-              <el-input-number v-model="formData.seatNumber" :min="2" :max="70"></el-input-number>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
           <el-col :span="12" class="col-position">
-            <el-form-item label="年代款">
-              <el-input v-model="formData.yearStyle"></el-input>
+            <el-form-item label="故障区域">
+              <el-select v-model="formData.badArea" style="width:100%">
+                <el-option
+                  v-for="item in badArea"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -296,6 +190,34 @@ export default {
         {
           label: "四驱",
           value: 1
+        }
+      ],
+      people: [
+        {
+          label: "陈师傅",
+          value: 0,
+        },
+        {
+          label: "邓师傅",
+          value: 1
+        },
+        {
+          label: "王师傅",
+          value: 2
+        }
+      ],
+      badArea: [
+        {
+          label: "车头",
+          value: 0
+        },
+        {
+          label: "车身",
+          value: 1
+        },
+        {
+          label: "下侧",
+          value: 2
         }
       ],
       filterAutomobileInfs: [],
@@ -405,28 +327,46 @@ export default {
       this.currentPage = 1;
       this.filterAutomobile();
     },
+    formatStatus(row) {
+      let status;
+      switch (row.status) {
+        case 0:
+          status = "待维修";
+          break;
+        case 1:
+          status = "待派单";
+          break;
+        case 2:
+          status = "维修中";
+          break;
+        case 3:
+          status = "正常";
+          break;
+        default:
+          status = "未知";
+          break;
+      }
+      return status;
+    },
     filterAutomobile() {
       let filtersName = this.filters.name.trim();
-      let filtersDrivingMode = this.filters.drivingMode;
       let filtersCategory = this.filters.category;
+      let filtersStatus = 2;
 
       let filtersAutomobile = this.automobileInfs.filter(item => {
         //标志位
         var isFiltersName = true;
-        var isFiltersDrivingMode = true;
+        var isfiltersStatus = true;
         var isFiltersCategory = true;
         //判断
         if (filtersName.length != 0) {
           isFiltersName = item.name.indexOf(filtersName) != -1;
         }
-        if (filtersDrivingMode.length != 0) {
-          console.log(filtersDrivingMode, item.drivingMode, item.drivingMode === filtersDrivingMode)
-          isFiltersDrivingMode = item.drivingMode === filtersDrivingMode;
-        }
+        isfiltersStatus = item.status == filtersStatus;
         if (filtersCategory.length != 0) {
           isFiltersCategory = item.category == filtersCategory;
         }
-        return isFiltersName && isFiltersDrivingMode && isFiltersCategory;
+        return isFiltersName && isfiltersStatus && isFiltersCategory;
       });
       this.filterAutomobileInfs = filtersAutomobile;
     },
@@ -472,15 +412,12 @@ export default {
             }
           }
           //更改缓存
-          localStorage.setItem('carInfo', JSON.stringify(this.automobileInfs));
+          localStorage.setItem('carInfo', JSON.stringify(this.automobileInfs))
           this.filterAutomobile();
           this.$message({
             message: "删除成功",
             type: "success"
           });
-          setTimeout(() => {
-            location.reload();
-          }, 500)
         })
         .catch(() => {
           // this.$message.error("删除失败");
@@ -524,6 +461,7 @@ export default {
             .then(() => {
               let automobileInfs = this.automobileInfs;
               let newData = Object.assign({}, this.formData);
+              newData.status = 1
               for (let index in automobileInfs) {
                 if (automobileInfs[index].id == this.id) {
                   automobileInfs.splice(index, 1, newData);
@@ -599,41 +537,6 @@ export default {
           break;
       }
       return categoryName;
-    },
-    formatEngine(row) {
-      return row.engine.length == 0
-        ? "未知"
-        : row.engine.trim().length == 0
-          ? "未知"
-          : row.engine.trim();
-    },
-    formatGearbox(row) {
-      return row.gearbox.length == 0
-        ? "未知"
-        : row.gearbox.trim().length == 0
-          ? "未知"
-          : row.gearbox.trim();
-    },
-    formatDrivingMode(row) {
-      return row.drivingMode === 0
-        ? "两驱"
-        : row.drivingMode == 1
-          ? "四驱"
-          : "未知";
-    },
-    formatEnergy(row) {
-      return row.energy === 0
-        ? "汽油"
-        : row.energy == 1
-          ? "柴油"
-          : row.energy == 2
-            ? "纯电动"
-            : row.energy == 3
-              ? "油电混合"
-              : "未知";
-    },
-    formatSeatNumber(row) {
-      return row.seatNumber.toString() + "座";
     },
     formatYearStyle(row) {
       return row.yearStyle.length == 0

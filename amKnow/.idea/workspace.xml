@@ -3,23 +3,33 @@
   <component name="ChangeListManager">
     <list default="true" id="c39969b2-fab4-487a-be55-c66d470d3e41" name="变更" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/element-ui/packages/form/src/form.vue" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/element-ui/packages/form/src/form.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/App.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/App.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/page/AutomobileBrandMng.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/AutomobileBrandMng.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/page/AutomobileInfMng.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/AutomobileInfMng.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/page/DispatchManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/DispatchManagement.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/page/PlanManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/PlanManagement.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/page/SparePartsManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/SparePartsManagement.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/page/StockMng.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/StockMng.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/Header.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/Header.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/Home.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/Home.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/LeftNav.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/LeftNav.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/common/Main.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/common/Main.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/AutomobileBrandMng.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/Index.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/AutomobileInfMng.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/DispatchManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/Rubbish.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/KnowledgeBase.vue" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/Login.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/Login.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/NotFound.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/NotFound.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/PlanManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/FileManager.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/SparePartsManagement.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/Share.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/page/StockMng.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/page/User.vue" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/router/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/router/index.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Vue Single File Component" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -33,12 +43,16 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/src/components/page/AutomobileInfMng.vue" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/components/page/SparePartsManagement.vue" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/components/page/AutomobileBrandMng.vue" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/components/page/StockMng.vue" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/components/page/PlanManagement.vue" root0="SKIP_INSPECTION" />
-    <setting file="file://$PROJECT_DIR$/src/components/page/DispatchManagement.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/page/FileManager.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/common/Home.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/page/Rubbish.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/common/LeftNav.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/page/Share.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/common/Header.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/page/User.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/common/Main.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/page/Index.vue" root0="SKIP_INSPECTION" />
+    <setting file="file://$PROJECT_DIR$/src/components/page/Collection.vue" root0="SKIP_INSPECTION" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -70,7 +84,11 @@
       <workItem from="1661691285067" duration="5000" />
       <workItem from="1661828806467" duration="1866000" />
       <workItem from="1662022998570" duration="582000" />
-      <workItem from="1662115970935" duration="32902000" />
+      <workItem from="1662115970935" duration="33417000" />
+      <workItem from="1662383828805" duration="580000" />
+      <workItem from="1662790807397" duration="639000" />
+      <workItem from="1663599557385" duration="1446000" />
+      <workItem from="1663746867128" duration="16309000" />
     </task>
     <servers />
   </component>

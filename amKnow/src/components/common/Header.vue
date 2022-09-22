@@ -1,17 +1,20 @@
 <template>
   <header class="header">
     <el-col :span="4" class="logo" :class="getCollapse?'logo-collapse-width':'logo-width'">
+      <i :class="getCollapse?'':'el-icon-cloudy'"></i>
       {{getCollapse?"":systemName}}
       <i
         v-show="getCollapse"
-        class="icon iconfont icon-tubiaozhizuomoban"
+        class="el-icon-cloudy iconfont icon-tubiaozhizuomoban"
       ></i>
     </el-col>
+
     <el-col :span="4">
       <div class="collapse-tool" @click="$store.state.isActive && $store.commit('collapse')">
         <i :class="getCollapse?'icon iconfont icon-right':'icon iconfont icon-left'"></i>
       </div>
     </el-col>
+
     <el-col :span="6" class="user">
       <el-dropdown>
         <span class="el-dropdown-link user-span">
@@ -33,6 +36,10 @@
         </el-dropdown-menu>
       </el-dropdown>
     </el-col>
+
+    <el-col :span="4" :push="16">
+      <i class="el-icon-bell"></i>
+    </el-col>
   </header>
 </template>
 <script>
@@ -40,13 +47,13 @@ import store from "@/vuex/store";
 export default {
   data() {
     return {
-      systemName: "公交车维修管理系统",
+      systemName: "简存取",
       image: ""
     };
   },
   store,
   mounted() {
-    this.image = JSON.parse(sessionStorage.getItem("userInf")).image;
+    // this.image = JSON.parse(sessionStorage.getItem("userInf")).image;
   },
   computed: {
     getCollapse() {
@@ -70,8 +77,8 @@ export default {
 </script>
 <style>
 .header {
-  background-color: #f6db63;
-  color: #053343;
+  background-color: #2b4049;
+  color: #fff;
 }
 .logo {
   height: 100%;
@@ -110,5 +117,8 @@ export default {
 }
 .icon-span {
   padding-left: 4px;
+}
+.el-icon-cloudy {
+  color: #288aba;
 }
 </style>

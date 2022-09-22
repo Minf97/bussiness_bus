@@ -22,62 +22,61 @@ export default new Router({
       component: () => import(/* webpackChunkName: "index" */ '../components/common/Home'),
       children: [
         {
-          path: 'automobileInfMng',
-          name: 'AutomobileInfMng',
-          component:  resolve => require(['@/components/page/AutomobileInfMng'], resolve),
+          path: 'index',
+          name: 'Index',
+          component:  resolve => require(['@/components/page/Index'], resolve),
           meta: {
             keepAlive: true // 需要缓存
           }
         },
         {
-          path: 'automobileBrandMng',
-          name: 'AutomobileBrandMng',
-          component:  resolve => require(['@/components/page/AutomobileBrandMng'], resolve),
+          path: 'user',
+          name: 'User',
+          component:  resolve => require(['@/components/page/User'], resolve),
           meta: {
             keepAlive: true // 需要缓存
           }
         },
         {
-          path: 'stockManage',
-          name: 'StockMng',
-          component:  resolve => require(['@/components/page/StockMng'], resolve),
+          path: 'fileManager',
+          name: 'FileManager',
+          component:  resolve => require(['@/components/page/FileManager'], resolve),
           meta: {
             keepAlive: true // 需要缓存
           }
         },
         {
-          path: 'Plan_management',
-          name: 'PlanManagement',
-          component:  resolve => require(['@/components/page/PlanManagement'], resolve),
+          path: 'collection',
+          name: 'Collection',
+          component:  resolve => require(['@/components/page/Collection'], resolve),
           meta: {
             keepAlive: true // 需要缓存
           }
         },
         {
-          path: 'Knowledge_base',
-          name: 'KnowledgeBase',
-          component:  resolve => require(['@/components/page/KnowledgeBase'], resolve),
+          path: 'share',
+          name: 'Share',
+          component: () => import(/* webpackChunkName: "index" */ '../components/page/Share'),
           meta: {
             keepAlive: true // 需要缓存
           }
         },
         {
-          path: 'Spare_parts_management',
-          name: 'SparePartsManagement',
-          component: () => import(/* webpackChunkName: "index" */ '../components/page/SparePartsManagement'),
+          path: 'rubbish',
+          name: 'Rubbish',
+          component:  resolve => require(['@/components/page/Rubbish'], resolve),
           meta: {
             keepAlive: true // 需要缓存
           }
         },
         {
-          path: 'Dispatch_management',
-          name: 'DispatchManagement',
-          component:  resolve => require(['@/components/page/DispatchManagement'], resolve),
+          path: 'setting',
+          name: 'Setting',
+          component:  resolve => require(['@/components/page/Setting'], resolve),
           meta: {
             keepAlive: true // 需要缓存
           }
         },
-
       ]
     },
     {

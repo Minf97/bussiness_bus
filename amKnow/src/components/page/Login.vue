@@ -89,7 +89,7 @@ export default {
               // 缓存
               sessionStorage.setItem("userInf", JSON.stringify(userInf));
               // 去到这个路由
-              this.$router.push({ path: "/automobileInfMng" });
+              this.$router.push({ path: "/index" });
             }
           } catch(error) {
             that.$message({

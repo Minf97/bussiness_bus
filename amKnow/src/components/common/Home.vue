@@ -29,82 +29,82 @@ export default {
           //一级
           entity: {
             id: "AM",
-            name: "车辆管理",
-            icon: "icon iconfont icon-box",
-            path: "automobileMng"
+            name: "首页",
+            icon: "el-icon-s-home iconfont icon-box",
+            path: "index"
           },
           //二级
-          childs: [
-            {
-              entity: {
-                id: "AIM",
-                name: "车辆信息",
-                icon: "",
-                path: "automobileInfMng"
-              }
-            },
-            {
-              entity: {
-                id: "ABM",
-                name: "车辆状态",
-                icon: "",
-                path: "automobileBrandMng"
-              }
-            }
-          ]
+          // childs: [
+          //   {
+          //     entity: {
+          //       id: "AIM",
+          //       name: "车辆信息",
+          //       icon: "",
+          //       path: "automobileInfMng"
+          //     }
+          //   },
+          //   {
+          //     entity: {
+          //       id: "ABM",
+          //       name: "车辆状态",
+          //       icon: "",
+          //       path: "automobileBrandMng"
+          //     }
+          //   }
+          // ]
         },
         {
           //一级
           entity: {
             id: "SM",
-            name: "保修管理",
-            icon: "icon iconfont icon-similarproduct",
-            path: "stockManage"
+            name: "用户管理",
+            icon: "el-icon-user-solid iconfont icon-similarproduct",
+            path: "user"
           }
         },
         {
           //一级
           entity: {
             id: "PM",
-            name: "计划管理",
-            icon: "icon iconfont icon-viewgallery",
-            path: "Plan_management"
+            name: "文件管理",
+            icon: "el-icon-files iconfont icon-viewgallery",
+            path: "fileManager"
           },
         },
         {
           //一级
           entity: {
             id: "KB",
-            name: "知识库",
-            icon: "el-icon-edit icon iconfont",
-            path: "Knowledge_base"
+            name: "我的收藏",
+            icon: "el-icon-star-off icon iconfont",
+            path: "collection"
           },
         },
         {
           //一级
           entity: {
             id: "SPM",
-            name: "备件管理",
-            icon: "el-icon-news icon iconfont",
-            path: "Spare_parts_management"
+            name: "我的分享",
+            icon: "el-icon-share icon iconfont",
+            path: "share"
           },
         },
         {
           //一级
           entity: {
             id: "DM",
-            name: "派单管理",
-            icon: "el-icon-time icon iconfont",
-            path: "Dispatch_management"
+            name: "回收站",
+            icon: "el-icon-delete icon iconfont",
+            path: "rubbish"
           },
         },
         {
           //一级
           entity: {
             id: "DB",
-            name: "后台管理",
-            icon: "icon iconfont icon-viewgallery",
-            path: "Dashboard"
+            name: "系统配置",
+            icon: "el-icon-setting iconfont icon-viewgallery",
+            path: "setting"
           },
         },
         // {

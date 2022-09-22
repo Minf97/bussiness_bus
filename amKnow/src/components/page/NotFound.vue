@@ -4,7 +4,7 @@
       type="text"
       icon="el-icon-arrow-left"
       class="back-to-index"
-      @click.native.prevent="$router.push({ path: '/automobileInfMng' })"
+      @click.native.prevent="$router.push({ path: '/index' })"
     >返回首页</el-button>
   </div>
 </template>
